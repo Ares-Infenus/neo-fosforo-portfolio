@@ -1,0 +1,22 @@
+---
+// La raíz redirige al idioma base (español). Si el navegador está en inglés, va a /en/.
+---
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Sebastián Pinzón — Data Engineer</title>
+  <meta http-equiv="refresh" content="0; url=/es/" />
+  <link rel="canonical" href="/es/" />
+  <link rel="alternate" hreflang="es" href="/es/" />
+  <link rel="alternate" hreflang="en" href="/en/" />
+  <script is:inline>
+    if ((navigator.language || '').slice(0, 2) === 'en') location.replace('/en/');
+  </script>
+  <style>body{background:#050809;color:#D5E6DD;font:15px/1.7 ui-monospace,monospace;padding:24px}a{color:#7CF5B0}</style>
+</head>
+<body>
+  <p><a href="/es/">Español</a> · <a href="/en/">English</a></p>
+</body>
+</html>

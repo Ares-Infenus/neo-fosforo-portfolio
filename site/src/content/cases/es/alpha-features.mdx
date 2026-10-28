@@ -1,0 +1,56 @@
+---
+lang: es
+permalink: alpha-feature-engineering
+code: EXP-02
+order: 1
+title: Alpha Feature Engineering
+domain: Ingeniería de features
+summary: Pipeline que convierte precios OHLCV diarios en 77 variables estacionarias por activo, listas para ML y sin fuga de información.
+metric:
+  label: VARIABLES ESTACIONARIAS POR ACTIVO
+  value: "77"
+  tone: ok
+  count: { to: 77 }
+stack: [Python, pandas, NumPy, scikit-learn, statsmodels, Pydantic, pytest]
+status: LIBRERÍA COMPLETA
+date: mar. 2026
+repo: https://github.com/Ares-Infenus/alpha-feature-engineering-timeseries
+tests: 42
+---
+
+## Resumen
+Pipeline que transforma datos OHLCV diarios en 77 variables estacionarias por activo, listas para modelos de machine learning y diseñadas para evitar el sesgo de anticipación (*look-ahead bias*).
+
+## Ficha técnica
+| Campo | Valor |
+| --- | --- |
+| Activos | BTC-USD, SPY, AAPL y futuros de oro |
+| Periodo | Barras diarias 2019–2024 |
+| Salida | Parquet comprimido |
+| Estado | Completo como librería de variables; sin conexión a un modelo ni a datos en vivo |
+
+## Qué construí
+- **Validación de datos:** consistencia OHLC, huecos y volumen cero.
+- **6 familias de variables**, incluidas las volatilidades de Parkinson y Garman-Klass e indicadores técnicos normalizados.
+- Toda variable en nivel de precio se convierte en retorno, ratio o z-score, para que sea estacionaria.
+- **Transformadores propios compatibles con scikit-learn**, que encajan en un `Pipeline`.
+- **Diagnóstico de variables:** VIF como diagnóstico (no como poda automática) e importancia basada en modelo evaluada solo con `TimeSeriesSplit`.
+
+## Decisiones técnicas
+| Decisión | Para qué |
+| --- | --- |
+| Transformaciones a retornos, ratios o z-scores | Variables estacionarias y comparables entre activos |
+| Evaluación solo con `TimeSeriesSplit` | No usar información del futuro al medir importancia |
+| VIF como diagnóstico, no como filtro | Mantener el control humano sobre qué variables descartar |
+| Transformadores compatibles con scikit-learn | Reutilizar los pasos dentro de cualquier `Pipeline` |
+
+## Ingeniería
+- Script de ejecución guiado por configuración.
+- 42 tests con pytest, incluidas pruebas específicas contra fuga de información.
+
+## Limitaciones
+- No está conectado a un modelo ni a un flujo de datos en vivo.
+- Cubre 4 activos y frecuencia diaria.
+
+## Reproducibilidad
+Instrucciones de ejecución en el README del repositorio.

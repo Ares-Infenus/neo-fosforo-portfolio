@@ -1,0 +1,27 @@
+<!-- @dsCard height=320 -->
+<!doctype html><html lang="es"><head><meta charset="utf-8"><link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet"><style>
+html,body{margin:0;background:var(--bg)}
+.cover{position:relative;width:960px;height:320px;overflow:hidden;background:var(--bg)}
+svg{position:absolute;left:0;top:0;width:960px;height:320px}
+.fg{fill:var(--fg)}.dim{fill:var(--fg-dim)}.ln{fill:var(--line)}.crit{fill:var(--state-crit)}.cut{fill:var(--bg)}
+.blk{rx:var(--radius-none)}
+.plus{fill:none;stroke:var(--line);stroke-width:1}
+.name{position:absolute;left:32px;bottom:64px;margin:0;font:700 96px/.95 var(--font-mono);letter-spacing:-.02em;color:var(--fg)}
+.tag{position:absolute;left:32px;bottom:32px;margin:0;max-width:440px;font:400 13px/20px var(--font-mono);color:var(--fg-dim)}
+.cover::after{content:"";position:absolute;inset:0;pointer-events:none;background:repeating-linear-gradient(to bottom,rgba(0,0,0,var(--scanline-opacity)) 0,rgba(0,0,0,var(--scanline-opacity)) 1px,transparent 1px,transparent 3px)}.name,.tag{text-shadow:var(--glow-soft)}</style></head><body><div class="cover">
+<!-- Bloques: fg 192x224 (slab), line 160x128, fg-dim 320x64, state-crit 64x64 (pequeño, solo señal); lados en múltiplos de space-2/space-4.
+Disposición: slab alto que sangra por arriba, banda ancha que sangra por abajo y a la derecha, bloque medio escalonado y señal mínima arriba a la derecha.
+Patrón: rejilla de cruces (retícula de radar/HUD) a paso 64px sobre la tierra, porque el sistema es técnico, monoespaciado y de líneas finas.
+Escalas: radius-none en todos los bloques; paso 64 = space-8 × 2; cruces de 12px en line. -->
+<svg viewBox="0 0 960 320" aria-hidden="true">
+<path class="plus" d="M506 32h12M512 26v12M506 96h12M512 90v12M506 160h12M512 154v12M506 224h12M512 218v12M506 288h12M512 282v12M570 32h12M576 26v12M570 96h12M576 90v12M570 160h12M576 154v12M570 224h12M576 218v12M570 288h12M576 282v12M634 32h12M640 26v12M634 96h12M640 90v12M634 160h12M640 154v12M634 224h12M640 218v12M634 288h12M640 282v12M698 32h12M704 26v12M698 96h12M704 90v12M698 160h12M704 154v12M698 224h12M704 218v12M698 288h12M704 282v12M762 32h12M768 26v12M762 96h12M768 90v12M762 160h12M768 154v12M762 224h12M768 218v12M762 288h12M768 282v12M826 32h12M832 26v12M826 96h12M832 90v12M826 160h12M832 154v12M826 224h12M832 218v12M826 288h12M832 282v12M890 32h12M896 26v12M890 96h12M896 90v12M890 160h12M896 154v12M890 224h12M896 218v12M890 288h12M896 282v12"/>
+<rect class="blk fg" x="544" y="0" width="192" height="224"/>
+<rect class="blk ln" x="736" y="96" width="160" height="128"/>
+<rect class="blk dim" x="640" y="256" width="320" height="64"/>
+<rect class="blk crit" x="896" y="0" width="64" height="64"/>
+<rect class="blk cut" x="576" y="160" width="128" height="8"/>
+<rect class="blk cut" x="576" y="184" width="80" height="8"/>
+</svg>
+<h1 class="name">Neo-<br>Fósforo</h1>
+<p class="tag">Terminal de fósforo con rigor contemporáneo.</p>
+</div></body></html>

@@ -1,0 +1,56 @@
+---
+lang: en
+permalink: insightflow-nlp-api
+code: EXP-03
+order: 2
+title: InsightFlow NLP
+domain: ML in production
+summary: REST API and dashboard that extract sentiment, entities and topics from unstructured text such as reviews or support tickets.
+metric:
+  label: LATENCY · WARM SENTIMENT REQUEST
+  value: ~170 ms
+  tone: ok
+stack: [FastAPI, Pydantic, HuggingFace Transformers, spaCy, Gensim, Streamlit, Docker]
+status: WORKING · PRE-TRAINED MODELS
+date: Mar 2026
+repo: https://github.com/Ares-Infenus/InsightFlow_NLP
+tests: 44
+---
+
+## Summary
+REST API and dashboard that extract sentiment, named entities and topics from unstructured text such as product reviews or support tickets.
+
+## Fact sheet
+| Field | Value |
+| --- | --- |
+| Service | FastAPI with 8 endpoints |
+| Input | Single text, batches of up to 500 texts, or CSV upload |
+| Deployment | Docker Compose (API + dashboard) |
+| Status | Working with pre-trained models |
+
+## What I built
+- **FastAPI service with 8 endpoints** and Pydantic validation.
+- **Streamlit dashboard** to explore results.
+- Integrated pre-trained models: **Twitter-RoBERTa** for sentiment, **spaCy `en_core_web_trf`** for NER and **Gensim LDA** for topics.
+- Docker Compose deployment.
+
+## Engineering
+- 44 pytest tests.
+- GitHub Actions CI.
+
+## Results
+| Measure | Value |
+| --- | --- |
+| Latency per warm sentiment request | ~170 ms |
+| Accuracy on 5,000 Amazon reviews, no fine-tuning | 69.7% |
+| Macro-F1 on the same reviews | 0.615 |
+
+## Limitations
+- The sentiment model was trained on tweets, not reviews, which explains the moderate accuracy on Amazon data.
+- A HuggingFace Trainer fine-tuning script is included but **has not been run yet**.
+
+## Next steps
+Run the fine-tuning on reviews and compare against the 69.7% baseline.
+
+## Reproducibility
+Run instructions with Docker Compose are in the repository README.

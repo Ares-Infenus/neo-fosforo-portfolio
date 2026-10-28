@@ -1,0 +1,64 @@
+---
+lang: es
+permalink: sparkflow-delta-pipeline
+code: EXP-01
+order: 0
+title: SparkFlow Delta Pipeline
+domain: Ingeniería de datos
+summary: Pipeline batch de detección de fraude con PySpark y Delta Lake sobre arquitectura medallion Bronze → Silver → Gold.
+metric:
+  label: ESCRITURA BRONZE · 100K FILAS
+  value: 5.1 s → 2.8 s
+  tone: ok
+stack: [PySpark 3.5, Delta Lake, Streamlit, Docker, pytest, GitHub Actions]
+status: DEMO FUNCIONAL · DATOS SINTÉTICOS
+date: mar. 2026
+repo: https://github.com/Ares-Infenus/SparkFlow_Delta_Pipeline
+tests: 24
+---
+
+## Resumen
+Pipeline batch para detección de fraude basada en reglas sobre transacciones bancarias sintéticas, construido con PySpark y Delta Lake en una arquitectura medallion (Bronze → Silver → Gold). Proyecto individual.
+
+## Ficha técnica
+| Campo | Valor |
+| --- | --- |
+| Rol | Proyecto individual: diseño, implementación y pruebas |
+| Fecha | Marzo de 2026 |
+| Datos | Transacciones bancarias sintéticas (Faker + `spark.range`) |
+| Volumen ejecutado | 100.000 filas en los notebooks publicados |
+| Capacidad del generador | Configurable hasta 100M filas (sin benchmark publicado) |
+| Estado | Demo funcional sobre datos sintéticos |
+
+## Arquitectura
+- **Generación:** generador nativo de Spark, configurable hasta 100M filas.
+- **Bronze:** carga de los datos tal como llegan, con recargas reejecutables (overwrite), particionado por fecha y compresión ZSTD.
+- **Silver:** deduplicación, limpieza, variables temporales, estadísticas móviles de 7 días por cuenta, z-scores por cuenta y *broadcast join* con una tabla de 50.000 comercios.
+- **Gold:** 5 reglas de fraude (monto alto, actividad nocturna, anomalía por z-score, velocidad y comercio de alto riesgo) y métricas agregadas para un dashboard de Streamlit de 3 páginas.
+
+## Decisiones técnicas
+| Decisión | Para qué |
+| --- | --- |
+| Delta Lake con cargas *overwrite* reejecutables | Poder relanzar el pipeline sin duplicar datos |
+| Particionado por fecha + compresión ZSTD | Reducir el tiempo de escritura y el tamaño en disco |
+| `OPTIMIZE` + `Z-ORDER` por `account_id` | Acelerar las consultas por cuenta en las capas siguientes |
+| *Time travel* (`versionAsOf`) | Auditar y comparar versiones de una tabla |
+| *Broadcast join* con la tabla de comercios | Evitar el *shuffle* al cruzar con una tabla pequeña |
+
+## Ingeniería
+- Docker Compose (Spark + Streamlit).
+- 24 tests con pytest.
+- CI en GitHub Actions: lint, tests y build de Docker.
+- Makefile para las tareas habituales.
+
+## Resultados
+- Con 100.000 filas, el particionado y la compresión ZSTD redujeron una escritura de la capa Bronze de **5,1 s a 2,8 s**.
+- El pipeline completo y el dashboard funcionan de extremo a extremo sobre datos sintéticos.
+
+## Limitaciones
+- Los datos son sintéticos: las reglas de fraude no están validadas con casos reales.
+- El benchmark completo a 100M filas está **pendiente**; la cifra de rendimiento publicada es solo a 100.000 filas.
+- La detección es por reglas, no por un modelo entrenado.
+
+## Reproducibilidad
+Instrucciones de ejecución con Docker Compose y Makefile en el README del repositorio.

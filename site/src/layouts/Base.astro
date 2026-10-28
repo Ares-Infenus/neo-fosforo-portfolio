@@ -1,0 +1,130 @@
+---
+import '../styles/global.css';
+import { t, swapLang, type Lang } from '../i18n/ui';
+
+interface Props {
+  lang: Lang;
+  title?: string;
+  description?: string;
+  /** Página de caso: modo LEGIBLE por defecto y sin escena 3D. */
+  readable?: boolean;
+  /** Muestra el botón 3D (solo la home tiene escena). */
+  has3d?: boolean;
+  /** Páginas de prueba: fuera de buscadores. */
+  noindex?: boolean;
+}
+
+const { lang, readable = false, has3d = false } = Astro.props;
+const T = t(lang);
+const title = Astro.props.title ?? T('meta.title');
+const description = Astro.props.description ?? T('meta.desc');
+const path = Astro.url.pathname.replace(/\/$/, '') || `/${lang}`;
+const site = Astro.site ?? new URL('https://example.com');
+const href = (p: string) => new URL(p, site).href;
+const esPath = swapLang(path, 'es');
+const enPath = swapLang(path, 'en');
+const home = `/${lang}/`;
+const anchor = (id: string) => (has3d ? `#${id}` : `${home}#${id}`);
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'ProfilePage',
+  inLanguage: lang,
+  mainEntity: {
+    '@type': 'Person',
+    name: 'Sebastián Pinzón',
+    jobTitle: lang === 'es' ? 'Data Engineer Junior' : 'Junior Data Engineer',
+    email: 'mailto:spinzonzambrano@gmail.com',
+    address: { '@type': 'PostalAddress', addressLocality: 'Bogotá', addressCountry: 'CO' },
+    alumniOf: { '@type': 'CollegeOrUniversity', name: 'Universidad Nacional de Colombia' },
+    knowsAbout: ['Data Engineering', 'Python', 'PySpark', 'SQL', 'Delta Lake', 'FastAPI', 'Docker', 'Machine Learning'],
+    sameAs: ['https://github.com/Ares-Infenus', 'https://www.linkedin.com/in/sebastiandpinzon'],
+  },
+};
+---
+<!doctype html>
+<html lang={lang} data-readable={readable ? '1' : '0'} data-intro={has3d ? '1' : '0'}>
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="color-scheme" content="dark" />
+  <title>{title}</title>
+  <meta name="description" content={description} />
+  {Astro.props.noindex && <meta name="robots" content="noindex,nofollow" />}
+  <link rel="canonical" href={href(path + '/')} />
+  <link rel="alternate" hreflang="es" href={href(esPath + '/')} />
+  <link rel="alternate" hreflang="en" href={href(enPath + '/')} />
+  <link rel="alternate" hreflang="x-default" href={href(esPath + '/')} />
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content={title} />
+  <meta property="og:description" content={description} />
+  <meta property="og:url" content={href(path + '/')} />
+  <meta property="og:locale" content={lang === 'es' ? 'es_CO' : 'en_US'} />
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&display=swap" />
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
+  <!-- Antes de pintar: aplica preferencias guardadas para evitar parpadeo. -->
+  <script is:inline>
+    (function () {
+      var d = document.documentElement, crt = null, on = null, mov = null;
+      d.classList.add('js');
+      try { crt = localStorage.getItem('nf-crt'); on = localStorage.getItem('nf-3d'); mov = localStorage.getItem('nf-motion'); } catch (e) {}
+      var legible = d.dataset.readable === '1' ? true : crt === '0';
+      if (legible) d.classList.add('legible');
+      if (on === '0') d.classList.add('no3d');
+      // Movimiento: activado por defecto. Solo se apaga si el visitante pulsa MOV (se recuerda).
+      var rm = mov === 'off';
+      if (rm) d.classList.add('rm');
+      // Modo ligero en táctiles y pantallas pequeñas: sin vidrio esmerilado (backdrop-filter), que es lo más caro sobre el 3D.
+      // También en PCs modestos (4 núcleos o menos, 4 GB de RAM o menos) o si el regulador 3D ya bajó de calidad antes.
+      var lowHw = (navigator.hardwareConcurrency || 8) <= 4 || (navigator.deviceMemory || 8) <= 4, savedLvl = 0;
+      try { savedLvl = (JSON.parse(localStorage.getItem('nf-lvl') || 'null') || {}).l || 0; } catch (e) {}
+      if ((window.matchMedia && matchMedia('(pointer:coarse)').matches) || innerWidth < 760 || lowHw || savedLvl >= 2) d.classList.add('lowfx');
+      // Secuencia de arranque: solo en la home, con movimiento y no al volver desde un caso.
+      var back = document.referrer.indexOf(location.origin) === 0 && /\/work\//.test(document.referrer);
+      if (d.dataset.intro === '1' && !rm && !back) d.classList.add('intro');
+    })();
+  </script>
+  <noscript><style>.needs-js{display:none!important}</style></noscript>
+</head>
+<body>
+  <a class="skip" href="#contenido">{T('skip')}</a>
+  <div id="fx" aria-hidden="true"></div>
+  <slot name="behind" />
+
+  <header class="bar">
+    <a class="brand" href={home}>SYS-04<span class="brand-long">&nbsp;// {T('brand')}</span></a>
+    <nav class="nav" aria-label={T('nav.label')}>
+      <a href={anchor('bronze')}>{T('nav.pipeline')}</a>
+      <a href={anchor('casos')}>{T('nav.cases')}</a>
+      <a href={anchor('perfil')}>{T('nav.profile')}</a>
+      <a href={anchor('contacto')}>{T('nav.contact')}</a>
+    </nav>
+    <div class="tools">
+      <button class="tb needs-js" id="bMode" type="button" aria-pressed="true" title={T('tool.crt.title')}
+        data-crt={T('tool.crt')} data-legible={T('tool.legible')}>{T('tool.crt')}</button>
+      <button class="tb needs-js" id="bMotion" type="button" aria-pressed="true" title={T('tool.motion.title')}>MOV</button>
+      {has3d && <button class="tb needs-js" id="b3d" type="button" aria-pressed="true" title={T('tool.3d.title')}>3D</button>}
+      <span role="group" aria-label={T('tool.lang')} style="display:contents">
+        <a class="tb" href={esPath + '/'} hreflang="es" lang="es" aria-current={lang === 'es' ? 'true' : undefined}>ES</a>
+        <a class="tb" href={enPath + '/'} hreflang="en" lang="en" aria-current={lang === 'en' ? 'true' : undefined}>EN</a>
+      </span>
+    </div>
+  </header>
+
+  <slot />
+
+  <footer>
+    <span class="fk" aria-hidden="true"><b>F1</b>{T('footer.help')}&nbsp;&nbsp;<b>F3</b>{T('footer.search')}&nbsp;&nbsp;<b>F10</b>{T('footer.exit')}</span>
+    <span>© SEBASTIÁN PINZÓN // {T('footer.access')}</span>
+  </footer>
+
+  <slot name="overlay" />
+
+  <script>
+    import '../scripts/chrome';
+  </script>
+</body>
+</html>

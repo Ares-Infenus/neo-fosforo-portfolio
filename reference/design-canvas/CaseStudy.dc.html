@@ -1,0 +1,297 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>EXP-01 — SparkFlow Delta Pipeline</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&amp;display=swap">
+<style>
+body{margin:0;background:#050807}
+a{color:#39FF88}
+a:hover{background:#39FF88;color:#050807;text-shadow:none}
+.lbl{font-size:11px;line-height:16px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:#4FB57A}
+.pn{position:relative;border:1px solid #2F8F59;background:#0B130E}
+.hd{display:flex;justify-content:space-between;gap:12px;padding:2px 12px;background:#39FF88;color:#050807;font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;text-shadow:none}
+.tg{min-height:44px;padding:0 14px;font-family:inherit;font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;cursor:pointer}
+.cell{padding:8px 12px;border-bottom:1px solid rgba(47,143,89,.45);font-size:13px;line-height:20px}
+@keyframes blink{50%{opacity:0}}
+.blink{animation:blink 1s steps(1) infinite}
+@media (prefers-reduced-motion:reduce){.blink{animation:none}}
+</style>
+</helmet>
+<div style="position:relative;overflow:hidden;background:#050807;color:#39FF88;font-family:'JetBrains Mono',ui-monospace,Menlo,Consolas,monospace;font-size:{{fs}}px;line-height:{{lh}};text-shadow:{{glow}}">
+
+<sc-if value="{{isCrt}}" hint-placeholder-val="{{false}}">
+<div style="position:absolute;inset:0;pointer-events:none;z-index:60;background:repeating-linear-gradient(to bottom,rgba(0,0,0,.28) 0,rgba(0,0,0,.28) 1px,transparent 1px,transparent 3px)"></div>
+</sc-if>
+
+<!-- Barra superior -->
+<div style="display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:12px;padding:4px 48px;background:#39FF88;color:#050807;text-shadow:none;font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase">
+<span style="display:flex;flex-wrap:wrap;align-items:center;gap:16px">
+<a href="Main.dc.html" style="color:#050807;display:inline-flex;align-items:center;min-height:44px">◂ {{t.back}}</a>
+<span>SYS-04 // EXP-01</span>
+</span>
+<span style="display:flex;flex-wrap:wrap;align-items:center;gap:8px">
+<button class="tg" onClick="{{setCrt}}" style="{{crtStyle}}">CRT</button>
+<button class="tg" onClick="{{setLeg}}" style="{{legStyle}}">{{t.leg}}</button>
+<span aria-hidden="true">|</span>
+<button class="tg" onClick="{{setEs}}" style="{{esStyle}}">ES</button>
+<button class="tg" onClick="{{setEn}}" style="{{enStyle}}">EN</button>
+</span>
+</div>
+
+<!-- Cabecera del expediente -->
+<header style="padding:56px 48px 32px;border-bottom:1px solid #2F8F59">
+<div class="lbl">{{t.kicker}} // EXP-01</div>
+<h1 style="margin:8px 0 12px;font-size:clamp(30px,5vw,56px);line-height:1.1;font-weight:700;letter-spacing:-.01em;text-shadow:{{glowStrong}}">SparkFlow Delta Pipeline</h1>
+<p style="margin:0;max-width:720px;color:#4FB57A">{{t.subtitle}}</p>
+<div style="margin-top:12px;font-size:12px;color:#4FB57A">{{t.modeNote}}</div>
+</header>
+
+<!-- TL;DR + ficha -->
+<section style="display:flex;flex-wrap:wrap;gap:24px;padding:40px 48px">
+<div class="pn" style="flex:1.618 1 480px;min-width:0">
+<div class="hd"><span>01 // TL;DR</span><span>3 {{t.lines}}</span></div>
+<div style="padding:16px">
+<sc-for list="{{t.tldr}}" as="r" hint-placeholder-count="3">
+<div style="display:flex;flex-wrap:wrap;gap:4px 16px;padding:8px 0;border-bottom:1px solid rgba(47,143,89,.45)"><span class="lbl" style="flex:0 0 120px">{{r.k}}</span><span style="flex:1 1 280px;color:{{r.color}}">{{r.v}}</span></div>
+</sc-for>
+<div style="display:flex;flex-wrap:wrap;gap:12px;margin-top:16px;color:#FFB000">
+<span>[REPO]</span><span>[DEMO]</span><span>[{{t.report}}]</span>
+</div>
+</div>
+</div>
+<div class="pn" style="flex:1 1 320px;min-width:0">
+<div class="hd"><span>02 // {{t.fichaTitle}}</span><span>EXP-01</span></div>
+<div style="padding:8px 16px">
+<sc-for list="{{t.ficha}}" as="f" hint-placeholder-count="5">
+<div style="display:flex;justify-content:space-between;gap:16px;padding:8px 0;border-bottom:1px solid rgba(47,143,89,.45)"><span class="lbl">{{f.k}}</span><span style="text-align:right;color:{{f.color}}">{{f.v}}</span></div>
+</sc-for>
+</div>
+</div>
+</section>
+
+<!-- Índice + cuerpo -->
+<section style="display:flex;flex-wrap:wrap;gap:48px;padding:0 48px 72px">
+<nav aria-label="{{t.indexTitle}}" style="flex:1 1 220px;min-width:0;align-self:flex-start">
+<div class="lbl" style="margin-bottom:8px">{{t.indexTitle}}</div>
+<sc-for list="{{nav}}" as="n" hint-placeholder-count="13">
+<div><a href="{{n.href}}" style="display:inline-block;padding:4px 0;font-size:12px;text-decoration:none">{{n.num}} {{n.title}}</a></div>
+</sc-for>
+</nav>
+<div style="flex:999 1 560px;min-width:0;max-width:820px">
+<sc-for list="{{sections}}" as="s" hint-placeholder-count="13">
+<div id="{{s.id}}" style="padding:28px 0 20px;border-top:1px solid #2F8F59">
+<div class="lbl">{{s.num}}</div>
+<h2 style="margin:4px 0 12px;font-size:24px;line-height:1.3;font-weight:700;letter-spacing:.02em">{{s.title}}</h2>
+
+<sc-if value="{{s.isGen}}" hint-placeholder-val="{{true}}">
+<div>
+<sc-for list="{{s.lines}}" as="ln" hint-placeholder-count="2">
+<p style="margin:0 0 8px;color:{{ln.color}}">{{ln.txt}}</p>
+</sc-for>
+</div>
+</sc-if>
+
+<sc-if value="{{s.isArch}}" hint-placeholder-val="{{false}}">
+<div>
+<div style="display:flex;flex-wrap:wrap;align-items:stretch;gap:12px">
+<sc-for list="{{t.layers}}" as="L" hint-placeholder-count="3">
+<div class="pn" style="flex:1 1 180px;min-width:0">
+<div class="hd"><span>{{L.name}}</span><span>{{L.tag}}</span></div>
+<div style="padding:12px;font-size:13px;line-height:20px">{{L.desc}}</div>
+</div>
+</sc-for>
+</div>
+<div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:16px;align-items:center">
+<span class="lbl">{{t.propsTitle}}</span>
+<sc-for list="{{t.props}}" as="p" hint-placeholder-count="3">
+<span style="border:1px solid #2F8F59;padding:0 10px;font-size:11px;line-height:24px;letter-spacing:.08em;text-transform:uppercase">{{p.label}}</span>
+</sc-for>
+</div>
+<p style="margin:12px 0 0;color:#FFB000">{{t.archPending}}</p>
+</div>
+</sc-if>
+
+<sc-if value="{{s.isDec}}" hint-placeholder-val="{{false}}">
+<div style="overflow-x:auto">
+<div style="min-width:640px;border:1px solid #2F8F59;background:#0B130E">
+<div style="display:grid;grid-template-columns:repeat(4,minmax(0,1fr))">
+<span class="cell lbl" style="color:#4FB57A">{{t.dec.h1}}</span><span class="cell lbl" style="color:#4FB57A">{{t.dec.h2}}</span><span class="cell lbl" style="color:#4FB57A">{{t.dec.h3}}</span><span class="cell lbl" style="color:#4FB57A">{{t.dec.h4}}</span>
+</div>
+<sc-for list="{{t.dec.rows}}" as="r" hint-placeholder-count="3">
+<div style="display:grid;grid-template-columns:repeat(4,minmax(0,1fr))">
+<span class="cell">{{r.a}}</span><span class="cell">{{r.b}}</span><span class="cell" style="color:#FFB000">{{r.c}}</span><span class="cell" style="color:#FFB000">{{r.d}}</span>
+</div>
+</sc-for>
+</div>
+</div>
+</sc-if>
+
+<sc-if value="{{s.isAuth}}" hint-placeholder-val="{{false}}">
+<div>
+<p style="margin:0 0 12px">{{t.auth.intro}}</p>
+<div style="overflow-x:auto">
+<div style="min-width:760px;border:1px solid #2F8F59;background:#0B130E">
+<div style="display:grid;grid-template-columns:repeat(5,minmax(0,1fr))">
+<span class="cell lbl" style="color:#4FB57A">{{t.auth.h1}}</span><span class="cell lbl" style="color:#4FB57A">{{t.auth.h2}}</span><span class="cell lbl" style="color:#4FB57A">{{t.auth.h3}}</span><span class="cell lbl" style="color:#4FB57A">{{t.auth.h4}}</span><span class="cell lbl" style="color:#4FB57A">{{t.auth.h5}}</span>
+</div>
+<sc-for list="{{t.auth.rows}}" as="r" hint-placeholder-count="2">
+<div style="display:grid;grid-template-columns:repeat(5,minmax(0,1fr))">
+<span class="cell" style="color:#FFB000">{{r.a}}</span><span class="cell" style="color:#FFB000">{{r.b}}</span><span class="cell" style="color:#FFB000">{{r.c}}</span><span class="cell" style="color:#FFB000">{{r.d}}</span><span class="cell" style="color:#FFB000">{{r.e}}</span>
+</div>
+</sc-for>
+</div>
+</div>
+</div>
+</sc-if>
+</div>
+</sc-for>
+
+<div style="display:flex;flex-wrap:wrap;gap:12px;margin-top:24px;padding-top:24px;border-top:1px solid #2F8F59">
+<a href="Main.dc.html" style="display:inline-flex;align-items:center;min-height:48px;padding:0 20px;border:1px solid #39FF88;font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;text-decoration:none">◂ {{t.back}}</a>
+<span class="blink" style="align-self:center">█</span>
+</div>
+</div>
+</section>
+
+<footer style="display:flex;flex-wrap:wrap;justify-content:space-between;gap:12px 24px;padding:12px 48px 20px;border-top:1px solid #2F8F59;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:#4FB57A">
+<span>© SEBASTIÁN PINZÓN</span><span>{{t.banner}}</span>
+</footer>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":3300}}'>
+const PH = '#FFB000', OK = '#39FF88';
+const T = {
+  es: {
+    back: 'INICIO', leg: 'LEGIBLE', kicker: 'EXPEDIENTE', banner: 'NIVEL DE ACCESO: Ω // PÚBLICO',
+    subtitle: 'Pipeline de datos con arquitectura medallion sobre PySpark y Delta Lake.',
+    modeNote: 'Modo legible activo en casos de estudio. Usa el interruptor CRT para volver al efecto completo.',
+    lines: 'LÍNEAS', report: 'INFORME', indexTitle: 'ÍNDICE', fichaTitle: 'FICHA TÉCNICA',
+    tldr: [
+      { k: 'PROBLEMA', v: '[COMPLETAR EN UNA LÍNEA]', color: PH },
+      { k: 'SOLUCIÓN', v: 'Pipeline con arquitectura medallion (Bronze/Silver/Gold) sobre PySpark y Delta Lake.', color: OK },
+      { k: 'RESULTADO', v: 'Más de 100 millones de transacciones procesadas.', color: OK }
+    ],
+    ficha: [
+      { k: 'ROL', v: '[ROL]', color: PH }, { k: 'DURACIÓN', v: '[DURACIÓN]', color: PH },
+      { k: 'STACK', v: 'PySpark · Delta Lake', color: OK }, { k: 'DATOS', v: '100M+ transacciones', color: OK },
+      { k: 'ESTADO', v: '[PROTOTIPO / DESPLEGADO / ARCHIVADO]', color: PH }
+    ],
+    layers: [
+      { name: 'BRONZE', tag: 'CRUDO', desc: 'Ingesta de los datos tal como llegan, sin transformar.' },
+      { name: 'SILVER', tag: 'LIMPIO', desc: 'Datos limpios, tipados y validados.' },
+      { name: 'GOLD', tag: 'CONSUMO', desc: 'Tablas listas para análisis y modelos.' }
+    ],
+    propsTitle: 'PROPIEDADES DEL DISEÑO', props: [{ label: 'IDEMPOTENCIA' }, { label: 'PARTICIONADO' }, { label: 'TIME TRAVEL' }],
+    archPending: '[DIAGRAMA DETALLADO Y FLUJO ENTRE TABLAS: PENDIENTE]',
+    dec: { h1: 'DECISIÓN', h2: 'ELEGIDA', h3: 'ALTERNATIVAS', h4: 'MOTIVO', rows: [
+      { a: 'Formato de tabla', b: 'Delta Lake', c: '[ALTERNATIVAS]', d: '[MOTIVO]' },
+      { a: 'Motor de procesamiento', b: 'PySpark', c: '[ALTERNATIVAS]', d: '[MOTIVO]' },
+      { a: 'Particionado', b: '[ESTRATEGIA]', c: '[ALTERNATIVAS]', d: '[MOTIVO]' }
+    ] },
+    auth: { intro: 'Qué hice yo, qué asistió la IA y cómo se verificó. Completar con honestidad.', h1: 'COMPONENTE', h2: 'IMPLEMENTADO POR MÍ', h3: 'ASISTIDO POR IA (REVISADO)', h4: 'AUTOMATIZADO', h5: 'VERIFICADO CÓMO', rows: [
+      { a: '[COMPONENTE]', b: '[COMPLETAR]', c: '[COMPLETAR]', d: '[COMPLETAR]', e: '[COMPLETAR]' },
+      { a: '[COMPONENTE]', b: '[COMPLETAR]', c: '[COMPLETAR]', d: '[COMPLETAR]', e: '[COMPLETAR]' }
+    ] },
+    secs: [
+      { n: '03', title: 'PROBLEMA Y CONTEXTO', lines: [['[PARA QUIÉN ES Y POR QUÉ IMPORTA]', 1]] },
+      { n: '04', title: 'OBJETIVOS Y REQUISITOS', lines: [['Funcionales: [COMPLETAR]', 1], ['No funcionales (latencia, coste, frecuencia): [COMPLETAR]', 1]] },
+      { n: '05', title: 'DATOS Y PROCEDENCIA', lines: [['Volumen: más de 100 millones de transacciones.', 0], ['Fuente y licencia: [COMPLETAR]', 1], ['Calidad y sesgos conocidos: [COMPLETAR]', 1]] },
+      { n: '06', title: 'ARQUITECTURA', kind: 'arch' },
+      { n: '07', title: 'DECISIONES Y ALTERNATIVAS', kind: 'dec' },
+      { n: '08', title: 'IMPLEMENTACIÓN', lines: [['Procesamiento con PySpark sobre tablas Delta Lake.', 0], ['Detalle del pipeline: [COMPLETAR]', 1]] },
+      { n: '09', title: 'VALIDACIÓN', lines: [['Tests y controles de calidad de datos: [COMPLETAR]', 1]] },
+      { n: '10', title: 'RESULTADOS', lines: [['Escala: más de 100 millones de transacciones procesadas.', 0], ['Línea base y método de medición: [COMPLETAR]', 1]] },
+      { n: '11', title: 'LIMITACIONES CONOCIDAS', lines: [['[QUÉ NO RESUELVE Y QUÉ HARÍA DISTINTO]', 1]] },
+      { n: '12', title: 'COSTE Y RENDIMIENTO', lines: [['SIN DATOS. Si no se midió, se declara aquí.', 1]] },
+      { n: '13', title: 'REPRODUCIBILIDAD', lines: [['Comando único: [COMPLETAR]', 1], ['Docker y semillas: [COMPLETAR]', 1]] },
+      { n: '14', title: 'AUTORÍA Y USO DE IA', kind: 'auth' },
+      { n: '15', title: 'PRÓXIMOS PASOS', lines: [['[COMPLETAR]', 1]] }
+    ]
+  },
+  en: {
+    back: 'HOME', leg: 'READABLE', kicker: 'CASE FILE', banner: 'ACCESS LEVEL: Ω // PUBLIC',
+    subtitle: 'Data pipeline with a medallion architecture on PySpark and Delta Lake.',
+    modeNote: 'Readable mode is on for case studies. Use the CRT switch to bring back the full effect.',
+    lines: 'LINES', report: 'REPORT', indexTitle: 'INDEX', fichaTitle: 'TECH SHEET',
+    tldr: [
+      { k: 'PROBLEM', v: '[FILL IN ONE LINE]', color: PH },
+      { k: 'SOLUTION', v: 'Pipeline with a medallion architecture (Bronze/Silver/Gold) on PySpark and Delta Lake.', color: OK },
+      { k: 'RESULT', v: 'More than 100 million transactions processed.', color: OK }
+    ],
+    ficha: [
+      { k: 'ROLE', v: '[ROLE]', color: PH }, { k: 'DURATION', v: '[DURATION]', color: PH },
+      { k: 'STACK', v: 'PySpark · Delta Lake', color: OK }, { k: 'DATA', v: '100M+ transactions', color: OK },
+      { k: 'STATUS', v: '[PROTOTYPE / DEPLOYED / ARCHIVED]', color: PH }
+    ],
+    layers: [
+      { name: 'BRONZE', tag: 'RAW', desc: 'Ingestion of data exactly as it arrives, untransformed.' },
+      { name: 'SILVER', tag: 'CLEAN', desc: 'Cleaned, typed and validated data.' },
+      { name: 'GOLD', tag: 'CONSUMPTION', desc: 'Tables ready for analytics and models.' }
+    ],
+    propsTitle: 'DESIGN PROPERTIES', props: [{ label: 'IDEMPOTENCY' }, { label: 'PARTITIONING' }, { label: 'TIME TRAVEL' }],
+    archPending: '[DETAILED DIAGRAM AND TABLE FLOW: PENDING]',
+    dec: { h1: 'DECISION', h2: 'CHOSEN', h3: 'ALTERNATIVES', h4: 'REASON', rows: [
+      { a: 'Table format', b: 'Delta Lake', c: '[ALTERNATIVES]', d: '[REASON]' },
+      { a: 'Processing engine', b: 'PySpark', c: '[ALTERNATIVES]', d: '[REASON]' },
+      { a: 'Partitioning', b: '[STRATEGY]', c: '[ALTERNATIVES]', d: '[REASON]' }
+    ] },
+    auth: { intro: 'What I did, what AI assisted with, and how it was verified. Fill in honestly.', h1: 'COMPONENT', h2: 'IMPLEMENTED BY ME', h3: 'AI-ASSISTED (REVIEWED)', h4: 'AUTOMATED', h5: 'VERIFIED HOW', rows: [
+      { a: '[COMPONENT]', b: '[FILL IN]', c: '[FILL IN]', d: '[FILL IN]', e: '[FILL IN]' },
+      { a: '[COMPONENT]', b: '[FILL IN]', c: '[FILL IN]', d: '[FILL IN]', e: '[FILL IN]' }
+    ] },
+    secs: [
+      { n: '03', title: 'PROBLEM AND CONTEXT', lines: [['[WHO IT IS FOR AND WHY IT MATTERS]', 1]] },
+      { n: '04', title: 'GOALS AND REQUIREMENTS', lines: [['Functional: [FILL IN]', 1], ['Non-functional (latency, cost, frequency): [FILL IN]', 1]] },
+      { n: '05', title: 'DATA AND PROVENANCE', lines: [['Volume: more than 100 million transactions.', 0], ['Source and license: [FILL IN]', 1], ['Known quality issues and biases: [FILL IN]', 1]] },
+      { n: '06', title: 'ARCHITECTURE', kind: 'arch' },
+      { n: '07', title: 'DECISIONS AND ALTERNATIVES', kind: 'dec' },
+      { n: '08', title: 'IMPLEMENTATION', lines: [['Processing with PySpark over Delta Lake tables.', 0], ['Pipeline details: [FILL IN]', 1]] },
+      { n: '09', title: 'VALIDATION', lines: [['Tests and data quality checks: [FILL IN]', 1]] },
+      { n: '10', title: 'RESULTS', lines: [['Scale: more than 100 million transactions processed.', 0], ['Baseline and measurement method: [FILL IN]', 1]] },
+      { n: '11', title: 'KNOWN LIMITATIONS', lines: [['[WHAT IT DOES NOT SOLVE AND WHAT I WOULD DO DIFFERENTLY]', 1]] },
+      { n: '12', title: 'COST AND PERFORMANCE', lines: [['NO DATA. If it was not measured, say so here.', 1]] },
+      { n: '13', title: 'REPRODUCIBILITY', lines: [['Single command: [FILL IN]', 1], ['Docker and seeds: [FILL IN]', 1]] },
+      { n: '14', title: 'AUTHORSHIP AND AI USE', kind: 'auth' },
+      { n: '15', title: 'NEXT STEPS', lines: [['[FILL IN]', 1]] }
+    ]
+  }
+};
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.state = { lang: 'es', crt: false };
+  }
+  renderVals() {
+    const s = this.state, t = T[s.lang], crt = s.crt;
+    const on = 'background:#050807;color:#39FF88;border:1px solid #050807;';
+    const off = 'background:transparent;color:#050807;border:1px solid #050807;';
+    const sections = t.secs.map((x) => ({
+      id: 's' + x.n, num: x.n, title: x.title,
+      isGen: !x.kind, isArch: x.kind === 'arch', isDec: x.kind === 'dec', isAuth: x.kind === 'auth',
+      lines: (x.lines || []).map((l) => ({ txt: l[0], color: l[1] ? PH : OK }))
+    }));
+    return {
+      t, sections,
+      nav: sections.map((x) => ({ href: '#' + x.id, num: x.num, title: x.title })),
+      isCrt: crt,
+      fs: crt ? 14 : 16, lh: crt ? '1.6' : '1.8',
+      glow: crt ? '0 0 6px rgba(57,255,136,.35)' : 'none',
+      glowStrong: crt ? '0 0 4px rgba(57,255,136,.7), 0 0 14px rgba(57,255,136,.45)' : 'none',
+      esStyle: s.lang === 'es' ? on : off, enStyle: s.lang === 'en' ? on : off,
+      crtStyle: crt ? on : off, legStyle: crt ? off : on,
+      setEs: () => this.setState({ lang: 'es' }), setEn: () => this.setState({ lang: 'en' }),
+      setCrt: () => this.setState({ crt: true }), setLeg: () => this.setState({ crt: false })
+    };
+  }
+}
+</script>
+</body>
+</html>

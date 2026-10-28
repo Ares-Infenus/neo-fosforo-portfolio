@@ -1,0 +1,56 @@
+---
+lang: en
+permalink: alpha-feature-engineering
+code: EXP-02
+order: 1
+title: Alpha Feature Engineering
+domain: Feature engineering
+summary: Pipeline that turns daily OHLCV prices into 77 stationary, ML-ready features per asset, with no look-ahead leakage.
+metric:
+  label: STATIONARY FEATURES PER ASSET
+  value: "77"
+  tone: ok
+  count: { to: 77 }
+stack: [Python, pandas, NumPy, scikit-learn, statsmodels, Pydantic, pytest]
+status: LIBRARY COMPLETE
+date: Mar 2026
+repo: https://github.com/Ares-Infenus/alpha-feature-engineering-timeseries
+tests: 42
+---
+
+## Summary
+Pipeline that turns raw daily OHLCV data into 77 stationary, ML-ready features per asset, designed to avoid look-ahead bias.
+
+## Fact sheet
+| Field | Value |
+| --- | --- |
+| Assets | BTC-USD, SPY, AAPL and gold futures |
+| Period | Daily bars, 2019–2024 |
+| Output | Compressed Parquet |
+| Status | Complete as a feature library; not connected to a live model or data feed |
+
+## What I built
+- **Data validation:** OHLC consistency, gaps and zero volume.
+- **6 feature families**, including Parkinson and Garman-Klass volatility and normalized technical indicators.
+- Every price-level feature is converted to returns, ratios or z-scores so it is stationary.
+- **Custom scikit-learn-compatible transformers** that plug into a `Pipeline`.
+- **Feature diagnostics:** VIF as a diagnostic (not an automatic pruner) and model-based importance evaluated only with `TimeSeriesSplit`.
+
+## Technical decisions
+| Decision | Why |
+| --- | --- |
+| Convert to returns, ratios or z-scores | Stationary features, comparable across assets |
+| Evaluate only with `TimeSeriesSplit` | Never use future information when measuring importance |
+| VIF as a diagnostic, not a filter | Keep human control over which features to drop |
+| scikit-learn-compatible transformers | Reuse the steps inside any `Pipeline` |
+
+## Engineering
+- Config-driven run script.
+- 42 pytest tests, including dedicated anti-leakage checks.
+
+## Limitations
+- Not connected to a live model or data feed.
+- Covers 4 assets at daily frequency.
+
+## Reproducibility
+Run instructions are in the repository README.

@@ -1,0 +1,25 @@
+{
+  "v": 3,
+  "assetGroups": {},
+  "blobs": {},
+  "createdOnFiles": {
+    "at": "2026-10-25T12:00:00Z",
+    "v": 1
+  },
+  "docs": {
+    "readme": "project/README.md",
+    "sections": []
+  },
+  "groups": [],
+  "lastChange": {
+    "at": "2026-10-25T12:00:00Z",
+    "by": "Sebastian",
+    "note": "Versión 3: componente Portfolio (arranque, expedientes, ES/EN, modo CRT o legible) sobre la capa CRT, el radar 2.5D y el centro de mando.",
+    "via": "Claude chat"
+  },
+  "layout": "files",
+  "libraries": [],
+  "namespace": "NeoFosforo",
+  "sections": {},
+  "title": "Neo-Fósforo"
+}

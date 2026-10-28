@@ -1,0 +1,144 @@
+---
+// Maqueta del núcleo de datos (HUD táctico). No está enlazada desde el sitio ni se indexa.
+import { getCollection } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import { t } from '../../i18n/ui';
+
+const T = t('es');
+const cases = (await getCollection('cases', (c) => c.data.lang === 'es')).sort((a, b) => a.data.order - b.data.order);
+---
+<Base lang="es" title="Laboratorio · Núcleo de datos" noindex>
+  <Fragment slot="behind">
+    <canvas id="core-gl" aria-hidden="true"></canvas>
+    <div id="core-labels" aria-hidden="true"></div>
+  </Fragment>
+
+  <main id="contenido" class="lab-main">
+    <section class="lab-hero">
+      <div class="lab-copy">
+        <p class="lbl lab-kicker">SYS-04 // NÚCLEO DE DATOS</p>
+        <h1>SEBASTIÁN PINZÓN</h1>
+        <p class="role">{T('hero.role')}</p>
+        <p class="tag">{T('hero.tag')}</p>
+        <div class="cta">
+          <a class="btn solid" href="/es/#casos" data-core-target="VER CASOS DE ESTUDIO">{T('hero.cta.cases')}&nbsp;▸</a>
+          <a class="btn" href="/es/#contacto" data-core-target="CONTACTO">{T('hero.cta.contact')}</a>
+        </div>
+        <ul class="lab-cases" aria-label="Casos de estudio">
+          {cases.map((c, i) => (
+            <li><a href={`/es/work/${c.data.permalink}/`} data-core-node={i}><b>{c.data.code}</b><span>{c.data.title}</span></a></li>
+          ))}
+        </ul>
+      </div>
+    </section>
+  </main>
+
+  <Fragment slot="overlay">
+    <!-- HUD anclado a la pantalla -->
+    <div class="hud-frame" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
+
+    <!-- HUD anclado al núcleo (lo posiciona el script) -->
+    <div class="core-hud" id="coreHud">
+      <div class="callout c1" aria-hidden="true">
+        <span class="lbl">NÚCLEO // ESTADO</span>
+        <b id="hState">LATENTE</b>
+      </div>
+      <div class="callout c2" aria-hidden="true">
+        <span class="lbl">TELEMETRÍA DE LA ESCENA</span>
+        <span class="tele"><em>FPS</em><b id="hFps">--</b></span>
+        <span class="tele"><em>PARTÍCULAS</em><b id="hPts">--</b></span>
+        <span class="tele"><em>T+</em><b id="hT">00:00.0</b></span>
+      </div>
+      <div class="dock" id="dock" aria-hidden="true">
+        <p class="boot-line"><span id="bootTxt">SECUENCIA DE ARRANQUE</span> <b id="bootPct">0%</b></p>
+        <i class="boot-bar"><i id="bootFill"></i></i>
+        <p class="hint" id="dockHint">CARGANDO NÚCLEO…</p>
+      </div>
+    </div>
+    <div class="ign-flash" id="ignFlash" aria-hidden="true"></div>
+
+    <!-- Retícula que sigue al cursor -->
+    <div class="reticle" id="reticle" aria-hidden="true">
+      <i class="rx"></i><i class="ry"></i><span class="rc"></span>
+      <span class="rt" id="retText"></span>
+    </div>
+  </Fragment>
+</Base>
+
+<style is:global>
+  html.lab-page body { overflow-x: hidden; }
+  #core-gl { position: fixed; inset: 0; width: 100%; height: 100%; display: block; z-index: 0; }
+  #core-labels { position: fixed; inset: 0; z-index: 3; pointer-events: none; overflow: hidden; }
+  .core-lab { position: absolute; left: 0; top: 0; font-size: 10px; letter-spacing: .16em; color: var(--c); padding: 2px 8px; border: 1px solid color-mix(in srgb, var(--c) 60%, transparent); border-radius: 4px; background: rgba(5, 8, 9, .6); opacity: 0; white-space: nowrap; transition: background .3s, color .3s; }
+  .core-lab.on { background: var(--c); color: #04100A; text-shadow: none; }
+
+  .lab-main { pointer-events: none; }
+  .lab-hero { min-height: 100vh; display: flex; align-items: center; padding: 110px clamp(20px, 5vw, 72px) 64px; }
+  .lab-copy { width: min(560px, 100%); pointer-events: auto; }
+  .lab-kicker { color: var(--fg); }
+  .lab-main h1 { margin: 14px 0 6px; font-size: clamp(38px, 6.4vw, 84px); }
+  .lab-cases { list-style: none; margin: 36px 0 0; padding: 0; display: grid; gap: 6px; border-top: 1px solid var(--line); padding-top: 16px; }
+  .lab-cases a { display: flex; gap: 14px; align-items: center; min-height: 44px; padding: 0 12px; border: 1px solid transparent; border-radius: 8px; color: var(--text); text-decoration: none; font-size: 13px; transition: border-color .3s, background .3s, padding .3s var(--ease); }
+  .lab-cases a b { font-size: 11px; letter-spacing: .1em; color: var(--fg); font-weight: 700; }
+  .lab-cases a:hover, .lab-cases a:focus-visible { border-color: var(--line); background: rgba(124, 245, 176, .07); padding-left: 18px; }
+
+  /* Marco de pantalla */
+  .hud-frame { position: fixed; inset: 14px; z-index: 30; pointer-events: none; }
+  .hud-frame i { position: absolute; width: 38px; height: 38px; border: 1px solid var(--fg); opacity: .35; transition: opacity .6s, width .8s var(--ease), height .8s var(--ease); }
+  .hud-frame i:nth-child(1) { left: 0; top: 0; border-right: 0; border-bottom: 0; }
+  .hud-frame i:nth-child(2) { right: 0; top: 0; border-left: 0; border-bottom: 0; }
+  .hud-frame i:nth-child(3) { left: 0; bottom: 0; border-right: 0; border-top: 0; }
+  .hud-frame i:nth-child(4) { right: 0; bottom: 0; border-left: 0; border-top: 0; }
+  html.core-on .hud-frame i { opacity: .9; width: 64px; height: 64px; }
+
+  /* HUD del núcleo */
+  .core-hud { position: fixed; left: 0; top: 0; z-index: 20; width: 0; height: 0; pointer-events: none; }
+  .callout { position: absolute; display: grid; gap: 3px; padding: 10px 14px; border: 1px solid var(--line); border-radius: 10px; background: rgba(6, 12, 10, .55); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); font-size: 12px; white-space: nowrap; opacity: 0; translate: 0 8px; transition: opacity .6s var(--ease), translate .6s var(--ease); }
+  .callout b { color: var(--ice); font-weight: 600; letter-spacing: .08em; }
+  .callout::before { content: ""; position: absolute; width: 70px; height: 1px; background: linear-gradient(90deg, transparent, var(--fg)); }
+  .callout.c1 { transform: translate(calc(var(--r) * .78), calc(var(--r) * -1.05)); }
+  .callout.c1::before { right: 100%; top: 100%; transform-origin: right; transform: rotate(-35deg); }
+  .callout.c2 { transform: translate(calc(var(--r) * 1.0), calc(var(--r) * .35)); }
+  .callout.c2::before { right: 100%; top: 0; transform-origin: right; transform: rotate(35deg); }
+  .tele { display: flex; justify-content: space-between; gap: 18px; }
+  .tele em { font-style: normal; font-size: 10px; letter-spacing: .14em; color: var(--dim); }
+  html.core-on .callout { opacity: 1; translate: none; }
+  html.core-on .callout.c2 { transition-delay: .25s; }
+
+  .dock { position: absolute; transform: translate(-50%, calc(var(--r) * 1.12)); display: grid; justify-items: center; gap: 8px; pointer-events: none; transition: opacity .8s var(--ease), translate .8s var(--ease); }
+  .boot-line { font-size: 11px; letter-spacing: .2em; color: var(--fg); white-space: nowrap; }
+  .boot-line b { color: var(--ice); font-weight: 600; display: inline-block; min-width: 4ch; text-align: right; }
+  .boot-bar { position: relative; display: block; width: 260px; height: 3px; background: rgba(124, 245, 176, .14); border-radius: 2px; overflow: hidden; }
+  .boot-bar i { position: absolute; inset: 0; background: var(--fg); box-shadow: 0 0 10px var(--fg); transform-origin: left; transform: scaleX(var(--p, 0)); }
+  .hint { font-size: 10px; letter-spacing: .16em; color: var(--dim); white-space: nowrap; }
+  html.core-live .boot-bar { opacity: 0; transition: opacity .6s; }
+  html.core-live .boot-line { color: var(--ice); }
+
+  /* Destello de ignición: dura medio segundo y no bloquea nada */
+  .ign-flash { position: fixed; inset: 0; z-index: 1; pointer-events: none; opacity: 0; background: radial-gradient(circle at var(--fx, 70%) var(--fy, 50%), rgba(230, 239, 234, .4), rgba(124, 245, 176, .14) 22%, transparent 55%); }
+  .ign-flash.go { animation: ign .9s cubic-bezier(.2, .7, .2, 1) both; }
+  @keyframes ign { 0% { opacity: 0; } 8% { opacity: 1; } 100% { opacity: 0; } }
+  html.rm .ign-flash { display: none; }
+
+  /* Retícula */
+  .reticle { position: fixed; left: 0; top: 0; z-index: 95; width: 46px; height: 46px; margin: -23px 0 0 -23px; pointer-events: none; opacity: 0; transition: opacity .3s, width .3s var(--ease), height .3s var(--ease), margin .3s var(--ease); }
+  .reticle.on { opacity: 1; }
+  .reticle .rx, .reticle .ry { position: absolute; background: var(--fg); opacity: .8; }
+  .reticle .rx { left: -8px; right: -8px; top: 50%; height: 1px; clip-path: polygon(0 0, 30% 0, 30% 100%, 0 100%, 0 0, 70% 0, 100% 0, 100% 100%, 70% 100%); }
+  .reticle .ry { top: -8px; bottom: -8px; left: 50%; width: 1px; clip-path: polygon(0 0, 100% 0, 100% 30%, 0 30%, 0 70%, 100% 70%, 100% 100%, 0 100%); }
+  .reticle .rc { position: absolute; inset: 0; border: 1px solid var(--fg); border-radius: 50%; opacity: .6; transition: border-radius .3s, transform .5s var(--ease); }
+  .reticle .rt { position: absolute; left: calc(100% + 10px); top: 100%; font-size: 10px; letter-spacing: .14em; color: var(--fg); white-space: nowrap; }
+  .reticle.lock { width: 64px; height: 64px; margin: -32px 0 0 -32px; }
+  .reticle.lock .rc { border-radius: 6px; transform: rotate(45deg); opacity: 1; box-shadow: 0 0 18px rgba(124, 245, 176, .4); }
+  html.lab-page, html.lab-page a, html.lab-page button { cursor: none; }
+  @media (pointer: coarse) { html.lab-page, html.lab-page a, html.lab-page button { cursor: auto; } .reticle { display: none; } }
+
+  @media (max-width: 900px) {
+    .lab-hero { align-items: flex-end; padding-top: 52vh; }
+    .callout { display: none; }
+  }
+</style>
+
+<script>
+  import '../../scripts/reactor/lab';
+</script>

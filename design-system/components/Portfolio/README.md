@@ -1,0 +1,3 @@
+Página de portafolio completa: arranque con nombre y rol, expedientes de proyecto e interruptores de idioma y lectura.
+
+El hero escribe una secuencia de arranque y luego el nombre y el rol. Cada proyecto es un expediente con ID, dominio, métrica real, descripción y stack; al hacer clic se fija con bloom fuerte. Interruptores: ES/EN para el idioma y CRT/LEGIBLE, que apaga scanlines, bloom, aberración, parpadeo, grano y viñeta y sube el tamaño del texto. Con prefers-reduced-motion el arranque aparece completo y sin animación. El consumidor aporta los expedientes; una métrica que falte se escribe como SIN DATOS, nunca se inventa.

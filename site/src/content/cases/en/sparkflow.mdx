@@ -1,0 +1,64 @@
+---
+lang: en
+permalink: sparkflow-delta-pipeline
+code: EXP-01
+order: 0
+title: SparkFlow Delta Pipeline
+domain: Data engineering
+summary: Batch fraud-detection pipeline with PySpark and Delta Lake on a Bronze → Silver → Gold medallion architecture.
+metric:
+  label: BRONZE WRITE · 100K ROWS
+  value: 5.1 s → 2.8 s
+  tone: ok
+stack: [PySpark 3.5, Delta Lake, Streamlit, Docker, pytest, GitHub Actions]
+status: WORKING DEMO · SYNTHETIC DATA
+date: Mar 2026
+repo: https://github.com/Ares-Infenus/SparkFlow_Delta_Pipeline
+tests: 24
+---
+
+## Summary
+Batch pipeline for rule-based fraud detection on synthetic banking transactions, built with PySpark and Delta Lake on a medallion architecture (Bronze → Silver → Gold). Solo project.
+
+## Fact sheet
+| Field | Value |
+| --- | --- |
+| Role | Solo project: design, implementation and testing |
+| Date | March 2026 |
+| Data | Synthetic banking transactions (Faker + `spark.range`) |
+| Volume executed | 100,000 rows in the published notebooks |
+| Generator capacity | Configurable up to 100M rows (no published benchmark) |
+| Status | Working demo on synthetic data |
+
+## Architecture
+- **Generation:** Spark-native generator, configurable up to 100M rows.
+- **Bronze:** data loaded as it arrives, with re-runnable overwrite loads, date partitioning and ZSTD compression.
+- **Silver:** deduplication, cleaning, time features, 7-day rolling account stats, per-account z-scores and a broadcast join with a 50,000-merchant table.
+- **Gold:** 5 fraud rules (high amount, night activity, z-score anomaly, velocity and high-risk merchant) and aggregated metrics for a 3-page Streamlit dashboard.
+
+## Technical decisions
+| Decision | Why |
+| --- | --- |
+| Delta Lake with re-runnable overwrite loads | Re-run the pipeline without duplicating data |
+| Date partitioning + ZSTD compression | Faster writes and smaller files |
+| `OPTIMIZE` + `Z-ORDER` by `account_id` | Faster per-account queries downstream |
+| Time travel (`versionAsOf`) | Audit and compare table versions |
+| Broadcast join with the merchant table | Avoid a shuffle when joining a small table |
+
+## Engineering
+- Docker Compose (Spark + Streamlit).
+- 24 pytest tests.
+- GitHub Actions CI: lint, tests and Docker build.
+- Makefile for common tasks.
+
+## Results
+- At 100,000 rows, partitioning plus ZSTD compression cut a single Bronze write from **5.1 s to 2.8 s**.
+- The full pipeline and dashboard run end to end on synthetic data.
+
+## Limitations
+- The data is synthetic: the fraud rules are not validated against real cases.
+- The full 100M-row benchmark is **pending**; the published performance figure is at 100,000 rows only.
+- Detection is rule-based, not a trained model.
+
+## Reproducibility
+Run instructions with Docker Compose and the Makefile are in the repository README.

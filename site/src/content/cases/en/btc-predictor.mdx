@@ -1,0 +1,53 @@
+---
+lang: en
+permalink: btc-usdt-direction
+code: EXP-04
+order: 3
+title: BTC/USDT Price Direction Predictor
+domain: Machine learning
+summary: Experiment testing whether hourly market data predicts BTC/USDT direction 4 hours ahead. A weak signal, reported as such.
+metric:
+  label: ROC-AUC · WALK-FORWARD, 15 FOLDS
+  value: 0.543 ± 0.028
+  tone: ok
+stack: [Python, XGBoost, scikit-learn, Optuna, SHAP, pandas, pytest]
+status: VALIDATED EXPERIMENT
+date: Mar 2026
+repo: https://github.com/Ares-Infenus/xgboost-financial-predictor
+tests: 98
+---
+
+## Summary
+Experiment testing whether hourly market data can predict BTC/USDT direction 4 hours ahead. The result is a weak signal, only slightly above random, and it is reported that way: it is not a trading strategy.
+
+## Fact sheet
+| Field | Value |
+| --- | --- |
+| Data | 28,000+ hourly candles (2023–2026) from the public Binance API |
+| Features | 37 technical indicators |
+| Horizon | Price direction 4 hours ahead |
+| Validation | Walk-forward, 15 folds with 720-hour test windows |
+| Status | Validated experiment |
+
+## Method
+- 9-phase pipeline.
+- **Baselines:** Dummy, Logistic Regression and Random Forest.
+- **XGBoost** tuned with Optuna (50 trials).
+- **SHAP** for feature attribution.
+- **Walk-forward validation** over 15 folds to prevent temporal leakage.
+
+## Engineering
+- 98 pytest tests, organized by phase.
+
+## Results
+| Measure | Value |
+| --- | --- |
+| ROC-AUC (mean ± std over 15 folds) | 0.543 ± 0.028 |
+| Accuracy | 52.2% |
+
+## Limitations
+- The signal is weak: only slightly better than random.
+- **No backtest with costs was run**, so the result does not show profitability.
+
+## Reproducibility
+Phase-by-phase run instructions are in the repository README.

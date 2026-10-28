@@ -1,0 +1,695 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="dark">
+<title>Sebastián Pinzón — Data Engineer</title>
+<meta name="description" content="Portafolio de Sebastián Pinzón, Data Engineer: pipelines y plataformas de datos para sistemas de machine learning.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&amp;display=swap">
+<style>
+:root{
+  --bg:#050809;
+  --fg:#7CF5B0;
+  --text:#D5E6DD;
+  --dim:#93B3A4;
+  --line:rgba(124,245,176,.22);
+  --amb:#E8B04A;
+  --ice:#E6EFEA;
+  --crit:#FF6B5C;
+  --glass:rgba(8,14,12,.58);
+  --font:"JetBrains Mono",ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  --ease:cubic-bezier(.2,.7,.2,1);
+  --glow:0 0 10px rgba(124,245,176,.28);
+}
+*{box-sizing:border-box}
+html{background:var(--bg);color-scheme:dark;scroll-behavior:smooth;scroll-padding-top:calc(env(safe-area-inset-top,0px) + 72px)}
+body{margin:0;min-height:100vh;background:radial-gradient(ellipse at 50% 0%,#0B1512 0%,var(--bg) 60%);color:var(--text);font:400 15px/1.75 var(--font);padding-bottom:env(safe-area-inset-bottom,0px);-webkit-font-smoothing:antialiased;text-shadow:var(--glow)}
+body.legible{text-shadow:none}
+body.explore,html.lock{overflow:hidden}
+a{color:var(--fg);text-underline-offset:3px}
+a:hover{color:#fff}
+:focus-visible{outline:2px solid var(--fg);outline-offset:3px;border-radius:4px}
+h1,h2,h3,p{margin:0}
+button{font:inherit;color:inherit}
+#gl{position:fixed;inset:0;width:100%;height:100%;display:block;z-index:0;animation:turnon 1.4s var(--ease) both}
+body.no3d #gl{display:none}
+@keyframes turnon{0%{opacity:0;transform:scaleY(.004) scaleX(.3);filter:brightness(5)}40%{opacity:1;transform:scaleY(.004) scaleX(1);filter:brightness(3)}100%{opacity:1;transform:none;filter:none}}
+#fx{position:fixed;inset:0;z-index:90;pointer-events:none;background:repeating-linear-gradient(to bottom,rgba(0,0,0,.11) 0,rgba(0,0,0,.11) 1px,transparent 1px,transparent 3px),radial-gradient(ellipse at center,transparent 55%,rgba(0,0,0,.5) 100%);transition:opacity .6s var(--ease)}
+#fx.off{opacity:0}
+#glow{position:fixed;left:0;top:0;width:520px;height:520px;margin:-260px 0 0 -260px;z-index:1;pointer-events:none;background:radial-gradient(circle,rgba(124,245,176,.10),transparent 60%);transform:translate(50vw,40vh);will-change:transform}
+body.legible #glow,body.no3d #glow{display:none}
+
+/* Barra */
+.bar{position:fixed;left:0;right:0;top:0;z-index:50;display:flex;justify-content:space-between;align-items:center;gap:12px;padding:calc(env(safe-area-inset-top,0px) + 6px) clamp(16px,4vw,48px) 6px;background:linear-gradient(to bottom,rgba(5,8,9,.82),rgba(5,8,9,0));pointer-events:none;transition:opacity .5s var(--ease)}
+.bar>*{pointer-events:auto}
+.brand{font-size:12px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--fg)}
+.nav{display:flex;gap:4px;align-items:center}
+.nav a{display:inline-flex;align-items:center;min-height:44px;padding:0 12px;font-size:11px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--dim);text-decoration:none;border-radius:8px;transition:color .25s,background .25s}
+.nav a:hover{color:var(--fg);background:rgba(124,245,176,.08)}
+.tools{display:flex;gap:6px;align-items:center;flex-wrap:wrap;justify-content:flex-end}
+.tb{min-height:44px;padding:0 12px;border:1px solid var(--line);border-radius:8px;background:rgba(8,14,12,.5);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);color:var(--dim);font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;cursor:pointer;transition:all .25s var(--ease)}
+.tb:hover{color:var(--fg);border-color:var(--fg)}
+.tb[aria-pressed="true"]{color:var(--bg);background:var(--fg);border-color:var(--fg);text-shadow:none}
+body.explore .nav{opacity:0;pointer-events:none}
+
+/* Secciones */
+main{position:relative;z-index:2;pointer-events:none}
+main a,main button,main .pn,main .case{pointer-events:auto}
+section{position:relative;min-height:100vh;display:flex;align-items:center;padding:96px clamp(20px,5vw,64px)}
+.wrap{width:100%;max-width:1200px;margin:0 auto}
+body.explore main{opacity:0;visibility:hidden;transition:opacity .6s var(--ease),visibility .6s}
+main{transition:opacity .6s var(--ease)}
+.lbl{font-size:11px;line-height:16px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--dim)}
+.pn{position:relative;border:1px solid var(--line);border-radius:12px;background:var(--glass);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);box-shadow:0 18px 60px rgba(0,0,0,.4);overflow:hidden}
+.pn>.hd{display:flex;justify-content:space-between;gap:12px;padding:6px 16px;background:rgba(124,245,176,.92);color:#04100A;font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;text-shadow:none}
+.pn>.bd{padding:20px}
+.btn{display:inline-flex;align-items:center;justify-content:center;min-height:48px;padding:0 22px;border:1px solid var(--fg);border-radius:10px;background:transparent;color:var(--fg);font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;text-decoration:none;cursor:pointer;transition:all .3s var(--ease)}
+.btn:hover{background:rgba(124,245,176,.14);box-shadow:0 0 28px rgba(124,245,176,.22);color:#fff}
+.btn.solid{background:var(--fg);color:#04100A;text-shadow:none}
+.btn.solid:hover{background:#B8FFD7;color:#04100A}
+.chip{display:inline-flex;align-items:center;padding:0 12px;border:1px solid var(--line);border-radius:999px;font-size:11px;line-height:26px;letter-spacing:.08em;text-transform:uppercase;color:var(--dim);background:rgba(8,14,12,.4)}
+
+/* Hero */
+#hero{align-items:flex-end;padding-bottom:clamp(48px,9vh,96px)}
+#hero .wrap{display:flex;flex-wrap:wrap;gap:40px;align-items:flex-end}
+.hero-l{flex:999 1 560px;min-width:0}
+.hero-r{flex:1 1 340px;min-width:0}
+.boot{font-size:12px;line-height:20px;color:var(--dim);min-height:62px}
+.boot span{display:block;opacity:0;animation:bl .01s steps(1) forwards}
+.boot span:nth-child(1){animation-delay:.3s}.boot span:nth-child(2){animation-delay:.9s}.boot span:nth-child(3){animation-delay:1.5s}
+@keyframes bl{to{opacity:1}}
+h1{margin:20px 0 6px;font-size:clamp(36px,7.4vw,92px);line-height:1.02;font-weight:600;letter-spacing:-.025em;color:var(--ice);text-shadow:0 0 28px rgba(124,245,176,.35)}
+body.legible h1{text-shadow:none}
+.role{font-size:clamp(14px,2vw,20px);letter-spacing:.2em;text-transform:uppercase;color:var(--fg)}
+.tag{margin-top:18px;max-width:600px;font-size:16px;line-height:1.7;color:var(--text)}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:24px}
+.cta{display:flex;flex-wrap:wrap;gap:12px;margin-top:32px}
+.row{display:flex;justify-content:space-between;gap:16px;padding:9px 0;border-bottom:1px solid rgba(124,245,176,.12)}
+.row:last-child{border-bottom:0}
+.row b{font-weight:600;color:var(--ice)}
+.scrollhint{position:absolute;left:50%;bottom:20px;transform:translateX(-50%);font-size:10px;letter-spacing:.2em;color:var(--dim);animation:bob 2.4s ease-in-out infinite}
+@keyframes bob{50%{transform:translate(-50%,6px)}}
+
+/* Capítulos */
+.chap{width:min(480px,100%)}
+.chap.r{margin-left:auto}
+.chap h2{margin:10px 0 12px;font-size:clamp(22px,3vw,30px);line-height:1.25;font-weight:600;color:var(--ice)}
+.chap p{color:var(--text)}
+.step{display:flex;align-items:center;gap:10px;margin-top:20px}
+.dot{width:8px;height:8px;border-radius:50%;background:var(--c,var(--fg));box-shadow:0 0 12px var(--c,var(--fg))}
+.c-b{--c:var(--amb)}.c-s{--c:var(--ice)}.c-g{--c:var(--fg)}
+
+/* Casos */
+#casos .wrap>h2,#contacto .wrap>h2{margin:8px 0 8px;font-size:clamp(26px,3.6vw,40px);font-weight:600;line-height:1.15;color:var(--ice)}
+.sub{max-width:640px;color:var(--dim);margin-bottom:32px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:20px}
+.case{display:flex;flex-direction:column;text-align:left;padding:0;cursor:pointer;transition:transform .45s var(--ease),border-color .3s,box-shadow .3s}
+.case:hover,.case:focus-visible{transform:translateY(-6px);border-color:var(--fg);box-shadow:0 24px 70px rgba(0,0,0,.5),0 0 40px rgba(124,245,176,.14)}
+.case .bd{display:flex;flex-direction:column;gap:6px;flex:1}
+.case .t{font-size:17px;line-height:1.4;font-weight:600;color:var(--ice)}
+.case .m{font-size:26px;line-height:1.2;font-weight:600;color:var(--fg)}
+.case .m.w{font-size:19px;color:var(--amb)}
+.case .m.n{font-size:19px;color:var(--dim)}
+.case .d{font-size:13px;line-height:1.65;color:var(--text);flex:1}
+.case .go{margin-top:10px;font-size:11px;font-weight:700;letter-spacing:.1em;color:var(--fg)}
+.two{display:flex;flex-wrap:wrap;gap:20px}
+.two>.pn{flex:1 1 320px;min-width:0}
+.two>.pn.big{flex:1.618 1 440px}
+.am{color:var(--amb)}
+
+footer{position:relative;z-index:2;display:flex;flex-wrap:wrap;justify-content:space-between;gap:12px 24px;padding:20px clamp(20px,5vw,64px) 28px;border-top:1px solid var(--line);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--dim);background:rgba(5,8,9,.7)}
+footer .fk b{display:inline-block;background:var(--fg);color:#04100A;padding:0 7px;margin-right:6px;border-radius:4px;text-shadow:none}
+
+/* Etiquetas 3D */
+#labels{position:fixed;inset:0;z-index:3;pointer-events:none;overflow:hidden}
+.lab{position:absolute;left:0;top:0;font-size:10px;letter-spacing:.14em;text-transform:uppercase;white-space:nowrap;color:var(--c,var(--fg));padding:2px 8px;border:1px solid var(--c,var(--fg));border-radius:6px;background:rgba(5,8,9,.55);opacity:0;will-change:transform,opacity}
+body.explore #labels{z-index:60}
+body.no3d #labels{display:none}
+
+/* Exploración */
+.hud{position:fixed;left:50%;bottom:calc(env(safe-area-inset-bottom,0px) + 24px);transform:translateX(-50%);z-index:70;display:none;align-items:center;gap:14px;flex-wrap:wrap;justify-content:center;padding:10px 16px;border:1px solid var(--line);border-radius:12px;background:var(--glass);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--dim);max-width:calc(100vw - 32px)}
+body.explore .hud{display:flex}
+body.explore #gl{touch-action:none;cursor:grab}
+body.dragging #gl{cursor:grabbing}
+
+/* Cajón de caso */
+.veil{position:fixed;inset:0;z-index:80;background:rgba(3,6,5,.6);opacity:0;pointer-events:none;transition:opacity .4s var(--ease)}
+.veil.on{opacity:1;pointer-events:auto}
+#drawer{position:fixed;top:0;right:0;bottom:0;z-index:85;width:min(460px,100vw);padding:calc(env(safe-area-inset-top,0px) + 24px) 24px calc(env(safe-area-inset-bottom,0px) + 24px);background:rgba(7,12,10,.92);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);border-left:1px solid var(--line);transform:translateX(104%);transition:transform .55s var(--ease);overflow-y:auto}
+#drawer.on{transform:none}
+#drawer h2{margin:6px 0 4px;font-size:24px;line-height:1.3;font-weight:600;color:var(--ice)}
+#drawer .m{font-size:34px;font-weight:600;color:var(--fg);line-height:1.2;margin:2px 0 12px}
+#drawer .x{float:right;min-height:44px;min-width:44px;border:1px solid var(--line);border-radius:10px;background:transparent;color:var(--fg);cursor:pointer;font-weight:700}
+#drawer .x:hover{border-color:var(--fg)}
+.tags{display:flex;flex-wrap:wrap;gap:8px;margin:16px 0}
+
+/* Revelado */
+.rv{opacity:0;transform:translateY(22px);transition:opacity 1s var(--ease),transform 1s var(--ease);transition-delay:var(--d,0s)}
+.rv.in{opacity:1;transform:none}
+@media (max-width:760px){.nav{display:none}.chap.r{margin-left:0}section{padding-top:88px}.hero-r{flex-basis:100%}.lab{display:none}}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}#gl,.boot span,.scrollhint{animation:none}.boot span{opacity:1}.rv{opacity:1;transform:none;transition:none}.case:hover{transform:none}#drawer{transition:none}}
+</style>
+<noscript><style>.rv{opacity:1;transform:none}.boot span{opacity:1;animation:none}#gl{display:none}</style></noscript>
+</head>
+<body>
+<canvas id="gl" aria-hidden="true"></canvas>
+<div id="fx" aria-hidden="true"></div>
+<div id="glow" aria-hidden="true"></div>
+<div id="labels" aria-hidden="true"></div>
+
+<header class="bar">
+  <span class="brand">SYS-04 // <span data-en="PORTFOLIO">PORTAFOLIO</span></span>
+  <nav class="nav" aria-label="Principal">
+    <a href="#bronze" data-en="Pipeline">Pipeline</a>
+    <a href="#casos" data-en="Case studies">Casos</a>
+    <a href="#contacto" data-en="Contact">Contacto</a>
+  </nav>
+  <div class="tools">
+    <button class="tb" id="bMode" aria-pressed="true" title="CRT / legible">CRT</button>
+    <button class="tb" id="b3d" aria-pressed="true">3D</button>
+    <button class="tb" id="bEs" aria-pressed="true">ES</button>
+    <button class="tb" id="bEn" aria-pressed="false">EN</button>
+  </div>
+</header>
+
+<main id="top">
+  <section id="hero" data-k="0">
+    <div class="wrap">
+      <div class="hero-l">
+        <div class="boot" aria-hidden="true"><span>&gt; ARRANQUE DEL NÚCLEO v4.2</span><span>&gt; CARGANDO PERFIL ............ OK</span><span>&gt; ENLACE SEGURO ESTABLECIDO</span></div>
+        <h1>SEBASTIÁN PINZÓN</h1>
+        <p class="role">Data Engineer</p>
+        <p class="tag" data-en="Data pipelines and platforms for machine learning systems.">Pipelines y plataformas de datos para sistemas de machine learning.</p>
+        <div class="chips">
+          <span class="chip" data-en="12 PROJECTS">12 PROYECTOS</span>
+          <span class="chip" data-en="4 CASE STUDIES">4 CASOS DE ESTUDIO</span>
+          <span class="chip">ES / EN</span>
+        </div>
+        <div class="cta">
+          <a class="btn solid" href="#casos"><span data-en="VIEW CASE STUDIES">VER CASOS DE ESTUDIO</span>&nbsp;▸</a>
+          <button class="btn" id="bExplore" type="button"><span data-en="EXPLORE IN 3D">EXPLORAR EN 3D</span></button>
+          <a class="btn" href="#contacto" data-en="CONTACT">CONTACTO</a>
+        </div>
+      </div>
+      <div class="hero-r">
+        <div class="pn rv">
+          <div class="hd"><span data-en="QUICK PROOF">PRUEBA RÁPIDA</span><span>4</span></div>
+          <div class="bd">
+            <div class="row"><span class="lbl">SPARKFLOW</span><b><span class="cnt" data-to="100" data-suf="M+">100M+</span> <span data-en="transactions">transacciones</span></b></div>
+            <div class="row"><span class="lbl">YOLOV8</span><b><span class="cnt" data-to="85.2" data-dec="1" data-suf=" %">85.2 %</span> mAP@50</b></div>
+            <div class="row"><span class="lbl">MARKOWITZ</span><b>Sharpe <span class="cnt" data-to="1.29" data-dec="2">1.29</span></b></div>
+            <div class="row"><span class="lbl">CHURN</span><b>AUC <span class="cnt" data-to="0.8458" data-dec="4">0.8458</span></b></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="scrollhint" aria-hidden="true">SCROLL ▾</div>
+  </section>
+
+  <section id="bronze" data-k="1">
+    <div class="wrap">
+      <div class="chap c-b pn rv">
+        <div class="hd"><span>01 // BRONZE</span><span data-en="RAW">CRUDO</span></div>
+        <div class="bd">
+          <h2 data-en="Raw data ingestion">Ingesta de datos crudos</h2>
+          <p data-en="Everything comes in exactly as it arrives, untransformed. Here the data is still noise: mixed formats, duplicates, gaps.">Todo entra tal como llega, sin transformar. Aquí el dato todavía es ruido: formatos mezclados, duplicados, huecos.</p>
+          <div class="step"><span class="dot"></span><span class="lbl" data-en="FLOW STATE: UNORDERED">ESTADO DEL FLUJO: DESORDENADO</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="silver" data-k="2">
+    <div class="wrap">
+      <div class="chap r c-s pn rv">
+        <div class="hd"><span>02 // SILVER</span><span data-en="CLEAN">LIMPIO</span></div>
+        <div class="bd">
+          <h2 data-en="Cleaned, typed and validated data">Datos limpios, tipados y validados</h2>
+          <p data-en="The data is cleaned, typed and validated. The chaos snaps into a lattice: every record ends up where it belongs.">Se limpia, se tipa y se valida. El caos se alinea en una retícula: cada registro queda donde debe estar.</p>
+          <div class="step"><span class="dot"></span><span class="lbl" data-en="FLOW STATE: ALIGNED">ESTADO DEL FLUJO: ALINEADO</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="gold" data-k="3">
+    <div class="wrap">
+      <div class="chap c-g pn rv">
+        <div class="hd"><span>03 // GOLD</span><span data-en="CONSUMPTION">CONSUMO</span></div>
+        <div class="bd">
+          <h2 data-en="Tables ready for analytics and models">Tablas listas para análisis y modelos</h2>
+          <p data-en="The flow narrows into structure: tables ready for whoever consumes the data, whether a dashboard or a model.">El flujo se estrecha y se vuelve estructura: tablas listas para quien consume los datos, sea un dashboard o un modelo.</p>
+          <div class="chips">
+            <span class="chip" data-en="IDEMPOTENCY">IDEMPOTENCIA</span>
+            <span class="chip" data-en="PARTITIONING">PARTICIONADO</span>
+            <span class="chip">TIME TRAVEL</span>
+          </div>
+          <div class="step"><span class="lbl" data-en="IN SPARKFLOW">EN SPARKFLOW</span></div>
+          <div class="cta"><a class="btn solid" href="#casos"><span data-en="SEE THE 4 CASES">VER LOS 4 CASOS</span>&nbsp;▾</a></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="casos" data-k="4">
+    <div class="wrap">
+      <div class="lbl rv">02 // <span data-en="CASE FILES">EXPEDIENTES</span></div>
+      <h2 class="rv" data-en="CASE STUDIES">CASOS DE ESTUDIO</h2>
+      <p class="sub rv" data-en="Each file documents architecture, decisions and limitations. Open a card or touch a crystal in the scene.">Cada expediente documenta arquitectura, decisiones y limitaciones. Abre una tarjeta o toca un cristal del escenario.</p>
+      <div class="grid">
+        <button class="case pn rv" type="button" data-case="0" style="--d:.05s">
+          <div class="hd"><span>EXP-01</span><span data-en="Data engineering">Ingeniería de datos</span></div>
+          <div class="bd"><span class="t">SparkFlow Delta Pipeline</span><span class="lbl" data-en="TRANSACTIONS">TRANSACCIONES</span><span class="m"><span class="cnt" data-to="100" data-suf="M+">100M+</span></span><span class="d" data-en="Bronze/Silver/Gold medallion architecture with idempotency, partitioning and time travel.">Arquitectura medallion Bronze/Silver/Gold con idempotencia, particionado y time travel.</span><span class="go" data-en="OPEN FILE ▸">ABRIR EXPEDIENTE ▸</span></div>
+        </button>
+        <button class="case pn rv" type="button" data-case="1" style="--d:.15s">
+          <div class="hd"><span>EXP-02</span><span data-en="Data engineering">Ingeniería de datos</span></div>
+          <div class="bd"><span class="t" data-en="Airflow + dbt Pipeline">Pipeline Airflow + dbt</span><span class="lbl" data-en="STATUS">ESTADO</span><span class="m w" data-en="IN PROGRESS">EN CONSTRUCCIÓN</span><span class="d" data-en="Orchestrated pipeline over Binance data, on a zero budget.">Pipeline orquestado sobre datos de Binance, con presupuesto cero.</span><span class="go" data-en="OPEN FILE ▸">ABRIR EXPEDIENTE ▸</span></div>
+        </button>
+        <button class="case pn rv" type="button" data-case="2" style="--d:.25s">
+          <div class="hd"><span>EXP-03</span><span data-en="ML in production">ML en producción</span></div>
+          <div class="bd"><span class="t" data-en="Production ML API">ML API productiva</span><span class="lbl" data-en="METRIC">MÉTRICA</span><span class="m n" data-en="NO DATA">SIN DATOS</span><span class="d" data-en="Machine learning API with FastAPI, Pydantic, Docker and CI.">API de machine learning con FastAPI, Pydantic, Docker y CI.</span><span class="go" data-en="OPEN FILE ▸">ABRIR EXPEDIENTE ▸</span></div>
+        </button>
+        <button class="case pn rv" type="button" data-case="3" style="--d:.35s">
+          <div class="hd"><span>EXP-04</span><span data-en="Machine learning">Machine learning</span></div>
+          <div class="bd"><span class="t">BTC/USDT Price Direction Predictor</span><span class="lbl">ROC-AUC</span><span class="m"><span class="cnt" data-to="0.5431" data-dec="4">0.5431</span></span><span class="d" data-en="XGBoost with Optuna and SHAP, validated with walk-forward. A modest result, documented with its limits.">XGBoost con Optuna y SHAP, validado con walk-forward. Resultado modesto, documentado con sus límites.</span><span class="go" data-en="OPEN FILE ▸">ABRIR EXPEDIENTE ▸</span></div>
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <section id="contacto" data-k="5">
+    <div class="wrap">
+      <div class="lbl rv">03 // <span data-en="CONTACT">CONTACTO</span></div>
+      <h2 class="rv" data-en="OPEN CHANNEL">ABRIR CANAL</h2>
+      <div class="two" style="margin-top:28px">
+        <div class="pn rv">
+          <div class="hd"><span data-en="NOW">AHORA</span><span>2</span></div>
+          <div class="bd">
+            <div class="row"><span class="lbl">OMDENA × HOT fAIr</span><b data-en="GeoData Scout · junior ML">GeoData Scout · ML junior</b></div>
+            <div class="row"><span class="lbl">AIRFLOW + DBT</span><b data-en="Pipeline in progress">Pipeline en construcción</b></div>
+          </div>
+        </div>
+        <div class="pn big rv">
+          <div class="hd"><span data-en="ABOUT">SOBRE MÍ</span><span>README</span></div>
+          <div class="bd"><p data-en="Self-taught data engineer based in Colombia. I build production-grade projects: pipelines, machine learning and quantitative analysis. Looking for a remote data engineering role.">Ingeniero de datos autodidacta en Colombia. Construyo proyectos de nivel producción: pipelines, machine learning y análisis cuantitativo. Busco un rol remoto de data engineering.</p></div>
+        </div>
+        <div class="pn rv">
+          <div class="hd"><span>TERMINAL</span><span data-en="OPEN">ABIERTO</span></div>
+          <div class="bd">
+            <div class="row"><span class="lbl">EMAIL</span><span class="am">[TU EMAIL]</span></div>
+            <div class="row"><span class="lbl">GITHUB</span><a href="https://github.com/Ares-Infenus" rel="noopener">Ares-Infenus</a></div>
+            <div class="row"><span class="lbl">LINKEDIN</span><a href="https://linkedin.com/in/sebastiandpinzon" rel="noopener">sebastiandpinzon</a></div>
+            <div class="row"><span class="lbl">CV</span><span class="am">[PDF]</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <span class="fk"><b>F1</b><span data-en="HELP">AYUDA</span>&nbsp;&nbsp;<b>F3</b><span data-en="SEARCH">BUSCAR</span>&nbsp;&nbsp;<b>F10</b><span data-en="EXIT">SALIR</span></span>
+  <span>© SEBASTIÁN PINZÓN // <span data-en="ACCESS LEVEL: Ω // PUBLIC">NIVEL DE ACCESO: Ω // PÚBLICO</span></span>
+</footer>
+
+<div class="hud" id="hud" role="region" aria-label="3D">
+  <span data-en="EXPLORATION MODE · DRAG TO ORBIT · WHEEL TO ZOOM">MODO EXPLORACIÓN · ARRASTRA PARA ORBITAR · RUEDA PARA ZOOM</span>
+  <button class="btn" id="bExit" type="button" style="min-height:44px"><span data-en="EXIT">SALIR</span></button>
+</div>
+
+<div class="veil" id="veil"></div>
+<aside id="drawer" role="dialog" aria-modal="true" aria-labelledby="dTitle" aria-hidden="true">
+  <button class="x" id="dClose" type="button" aria-label="Cerrar">✕</button>
+  <div class="lbl" id="dId"></div>
+  <h2 id="dTitle"></h2>
+  <div class="lbl" id="dDom"></div>
+  <div style="margin-top:24px" class="lbl" id="dML"></div>
+  <div class="m" id="dMV"></div>
+  <p id="dDesc"></p>
+  <div class="tags" id="dTags"></div>
+  <div class="row"><span class="lbl" id="dStL"></span><b id="dSt"></b></div>
+  <p class="am" id="dNote" style="margin-top:16px;font-size:13px"></p>
+</aside>
+
+<script>
+(function () {
+  'use strict';
+  var doc = document, win = window;
+  var $ = function (id) { return doc.getElementById(id); };
+  var reduced = !!(win.matchMedia && win.matchMedia('(prefers-reduced-motion: reduce)').matches);
+  var isMobile = win.innerWidth < 760 || ((navigator.deviceMemory || 8) <= 2) || ((navigator.hardwareConcurrency || 8) <= 2);
+  var S = { lang: (navigator.language || 'es').slice(0, 2) === 'en' ? 'en' : 'es', crt: true, on: true, explore: false };
+
+  /* ---------- i18n: el español vive en el HTML, el inglés en data-en ---------- */
+  var tr = [].slice.call(doc.querySelectorAll('[data-en]'));
+  tr.forEach(function (el) { el.setAttribute('data-es', el.textContent); });
+  var CASES = [
+    { id: 'EXP-01', title: ['SparkFlow Delta Pipeline', 'SparkFlow Delta Pipeline'], dom: ['Ingeniería de datos', 'Data engineering'], ml: ['TRANSACCIONES', 'TRANSACTIONS'], mv: '100M+', desc: ['Arquitectura medallion Bronze/Silver/Gold con idempotencia, particionado y time travel.', 'Bronze/Silver/Gold medallion architecture with idempotency, partitioning and time travel.'], stack: ['PySpark', 'Delta Lake'], st: ['EXPEDIENTE ABIERTO', 'FILE OPEN'] },
+    { id: 'EXP-02', title: ['Pipeline Airflow + dbt', 'Airflow + dbt Pipeline'], dom: ['Ingeniería de datos', 'Data engineering'], ml: ['ESTADO', 'STATUS'], mv: ['EN CONSTRUCCIÓN', 'IN PROGRESS'], desc: ['Pipeline orquestado sobre datos de Binance, con presupuesto cero.', 'Orchestrated pipeline over Binance data, on a zero budget.'], stack: ['Airflow', 'dbt'], st: ['EN CONSTRUCCIÓN', 'IN PROGRESS'] },
+    { id: 'EXP-03', title: ['ML API productiva', 'Production ML API'], dom: ['ML en producción', 'ML in production'], ml: ['MÉTRICA', 'METRIC'], mv: ['SIN DATOS', 'NO DATA'], desc: ['API de machine learning con FastAPI, Pydantic, Docker y CI.', 'Machine learning API with FastAPI, Pydantic, Docker and CI.'], stack: ['FastAPI', 'Pydantic', 'Docker', 'CI'], st: ['EXPEDIENTE ABIERTO', 'FILE OPEN'] },
+    { id: 'EXP-04', title: ['BTC/USDT Price Direction Predictor', 'BTC/USDT Price Direction Predictor'], dom: ['Machine learning', 'Machine learning'], ml: ['ROC-AUC', 'ROC-AUC'], mv: '0.5431', desc: ['XGBoost con Optuna y SHAP, validado con walk-forward. Resultado modesto, documentado con sus límites.', 'XGBoost with Optuna and SHAP, validated with walk-forward. A modest result, documented with its limits.'], stack: ['XGBoost', 'Optuna', 'SHAP'], st: ['EXPEDIENTE ABIERTO', 'FILE OPEN'] }
+  ];
+  var NOTE = ['Caso de estudio completo en redacción.', 'Full case study in progress.'];
+  var STL = ['ESTADO', 'STATUS'];
+  function L(a) { return typeof a === 'string' ? a : a[S.lang === 'en' ? 1 : 0]; }
+  function applyLang() {
+    var en = S.lang === 'en';
+    doc.documentElement.lang = en ? 'en' : 'es';
+    tr.forEach(function (el) { el.textContent = en ? el.getAttribute('data-en') : el.getAttribute('data-es'); });
+    $('bEs').setAttribute('aria-pressed', String(!en));
+    $('bEn').setAttribute('aria-pressed', String(en));
+    $('bMode').textContent = S.crt ? 'CRT' : (en ? 'READABLE' : 'LEGIBLE');
+    $('dClose').setAttribute('aria-label', en ? 'Close' : 'Cerrar');
+    if (openIdx >= 0) fillDrawer(openIdx);
+  }
+
+  /* ---------- Cajón de casos ---------- */
+  var openIdx = -1, lastFocus = null;
+  function fillDrawer(i) {
+    var c = CASES[i];
+    $('dId').textContent = c.id; $('dTitle').textContent = L(c.title); $('dDom').textContent = L(c.dom);
+    $('dML').textContent = L(c.ml); $('dMV').textContent = L(c.mv); $('dDesc').textContent = L(c.desc);
+    $('dStL').textContent = L(STL); $('dSt').textContent = L(c.st); $('dNote').textContent = L(NOTE);
+    $('dTags').innerHTML = '';
+    c.stack.forEach(function (s) { var sp = doc.createElement('span'); sp.className = 'chip'; sp.textContent = s; $('dTags').appendChild(sp); });
+  }
+  function openDrawer(i) {
+    openIdx = i; lastFocus = doc.activeElement; fillDrawer(i);
+    $('drawer').classList.add('on'); $('drawer').setAttribute('aria-hidden', 'false'); $('veil').classList.add('on');
+    setTimeout(function () { $('dClose').focus(); }, 60);
+  }
+  function closeDrawer() {
+    if (openIdx < 0) return;
+    openIdx = -1; $('drawer').classList.remove('on'); $('drawer').setAttribute('aria-hidden', 'true'); $('veil').classList.remove('on');
+    if (lastFocus && lastFocus.focus) lastFocus.focus();
+  }
+  [].forEach.call(doc.querySelectorAll('.case'), function (b) { b.addEventListener('click', function () { openDrawer(+b.getAttribute('data-case')); }); });
+  $('dClose').addEventListener('click', closeDrawer);
+  $('veil').addEventListener('click', closeDrawer);
+
+  /* ---------- Controles ---------- */
+  $('bEs').addEventListener('click', function () { S.lang = 'es'; applyLang(); });
+  $('bEn').addEventListener('click', function () { S.lang = 'en'; applyLang(); });
+  $('bMode').addEventListener('click', function () {
+    S.crt = !S.crt; $('bMode').setAttribute('aria-pressed', String(S.crt));
+    $('fx').classList.toggle('off', !S.crt); doc.body.classList.toggle('legible', !S.crt);
+    applyLang(); if (api.bloom) api.bloom(S.crt); api.kick();
+  });
+  $('b3d').addEventListener('click', function () {
+    S.on = !S.on; $('b3d').setAttribute('aria-pressed', String(S.on));
+    doc.body.classList.toggle('no3d', !S.on);
+    if (S.on) { if (!api.ready) boot3D(); else api.start(); } else { api.stop(); if (S.explore) setExplore(false); }
+  });
+  function setExplore(v) {
+    if (v && !S.on) { $('b3d').click(); }
+    S.explore = v; doc.body.classList.toggle('explore', v); doc.documentElement.classList.toggle('lock', v);
+    if (api.explore) api.explore(v);
+  }
+  $('bExplore').addEventListener('click', function () { setExplore(true); });
+  $('bExit').addEventListener('click', function () { setExplore(false); });
+  doc.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape') { if (openIdx >= 0) closeDrawer(); else if (S.explore) setExplore(false); }
+  });
+
+  /* ---------- Revelado y contadores ---------- */
+  function count(el) {
+    if (reduced) return;
+    var to = parseFloat(el.getAttribute('data-to')), dec = +(el.getAttribute('data-dec') || 0), suf = el.getAttribute('data-suf') || '', t0 = null;
+    function step(t) {
+      if (t0 === null) t0 = t; var p = Math.min(1, (t - t0) / 1500), e = 1 - Math.pow(1 - p, 3);
+      el.textContent = (to * e).toFixed(dec) + suf; if (p < 1) requestAnimationFrame(step);
+    }
+    el.textContent = (0).toFixed(dec) + suf; requestAnimationFrame(step);
+  }
+  if ('IntersectionObserver' in win) {
+    var io = new IntersectionObserver(function (es) {
+      es.forEach(function (en) {
+        if (!en.isIntersecting) return;
+        en.target.classList.add('in');
+        [].forEach.call(en.target.querySelectorAll('.cnt'), count);
+        io.unobserve(en.target);
+      });
+    }, { threshold: .18 });
+    [].forEach.call(doc.querySelectorAll('.rv'), function (el) { io.observe(el); });
+  } else { [].forEach.call(doc.querySelectorAll('.rv'), function (el) { el.classList.add('in'); }); }
+
+  /* Resplandor que sigue al cursor */
+  var gx = 0, gy = 0, glowEl = $('glow');
+  if (!reduced && win.matchMedia && win.matchMedia('(pointer:fine)').matches) {
+    win.addEventListener('pointermove', function (e) { gx = e.clientX; gy = e.clientY; glowEl.style.transform = 'translate(' + gx + 'px,' + gy + 'px)'; }, { passive: true });
+  } else { glowEl.style.display = 'none'; }
+
+  /* ================= 3D ================= */
+  var api = { ready: false, start: function () {}, stop: function () {}, kick: function () {}, explore: null, bloom: null };
+
+  function loadScript(src) {
+    return new Promise(function (res) {
+      var s = doc.createElement('script'); s.src = src; s.async = false; s.onload = function () { res(true); }; s.onerror = function () { res(false); };
+      doc.head.appendChild(s);
+    });
+  }
+  var BASE = 'https://cdn.jsdelivr.net/npm/three@0.128.0/';
+  var booted = false;
+  function boot3D() {
+    if (booted) return; booted = true;
+    loadScript(BASE + 'build/three.min.js').then(function (ok) {
+      if (!ok || !win.THREE) { fail(); return; }
+      var chain = Promise.resolve();
+      if (!isMobile) {
+        ['examples/js/shaders/CopyShader.js', 'examples/js/shaders/LuminosityHighPassShader.js', 'examples/js/postprocessing/EffectComposer.js', 'examples/js/postprocessing/RenderPass.js', 'examples/js/postprocessing/ShaderPass.js', 'examples/js/postprocessing/UnrealBloomPass.js'].forEach(function (p) {
+          chain = chain.then(function () { return loadScript(BASE + p); });
+        });
+      }
+      chain.then(function () { try { init3D(win.THREE); } catch (err) { if (win.console) console.error(err); fail(); } });
+    });
+  }
+  function fail() { doc.body.classList.add('no3d'); S.on = false; $('b3d').setAttribute('aria-pressed', 'false'); }
+
+  function init3D(THREE) {
+    var canvas = $('gl');
+    var renderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: !isMobile, powerPreference: 'high-performance' });
+    var dpr = Math.min(win.devicePixelRatio || 1, isMobile ? 1.25 : 1.75);
+    renderer.setPixelRatio(dpr);
+    renderer.setClearColor(0x050809, 1);
+    var scene = new THREE.Scene();
+    scene.fog = new THREE.FogExp2(0x050809, 0.011);
+    var camera = new THREE.PerspectiveCamera(55, 1, 0.1, 400);
+
+    var C_RAW = new THREE.Color('#7E9189'), C_BRONZE = new THREE.Color('#E8B04A'), C_SILVER = new THREE.Color('#E6EFEA'), C_GOLD = new THREE.Color('#7CF5B0');
+    var PZ = [20, 60, 100], PCOL = [C_BRONZE, C_SILVER, C_GOLD];
+
+    /* Partículas: el dato pasa de caos a retícula a estructura */
+    var N = isMobile ? 3800 : 9000, pos = new Float32Array(N * 3), raw = new Float32Array(N * 2), lat = new Float32Array(N * 2), seed = new Float32Array(N * 4), i;
+    for (i = 0; i < N; i++) {
+      var x = (Math.random() * 2 - 1) * 19, y = (Math.random() * 2 - 1) * 11.5;
+      raw[i * 2] = x; raw[i * 2 + 1] = y;
+      lat[i * 2] = Math.round(x / 2.5) * 2.5; lat[i * 2 + 1] = Math.round(y / 2.5) * 2.5;
+      seed[i * 4] = Math.random(); seed[i * 4 + 1] = Math.random(); seed[i * 4 + 2] = Math.random(); seed[i * 4 + 3] = Math.random();
+    }
+    var pg = new THREE.BufferGeometry();
+    pg.setAttribute('position', new THREE.BufferAttribute(pos, 3));
+    pg.setAttribute('aRaw', new THREE.BufferAttribute(raw, 2));
+    pg.setAttribute('aLat', new THREE.BufferAttribute(lat, 2));
+    pg.setAttribute('aSeed', new THREE.BufferAttribute(seed, 4));
+    var uni = { uTime: { value: 0 }, uPR: { value: dpr }, uSize: { value: 2.3 }, uRaw: { value: C_RAW }, uBronze: { value: C_BRONZE }, uSilver: { value: C_SILVER }, uGold: { value: C_GOLD } };
+    var pm = new THREE.ShaderMaterial({
+      uniforms: uni, transparent: true, depthWrite: false, blending: THREE.AdditiveBlending,
+      vertexShader: [
+        'uniform float uTime; uniform float uPR; uniform float uSize; uniform vec3 uRaw; uniform vec3 uBronze; uniform vec3 uSilver; uniform vec3 uGold;',
+        'attribute vec2 aRaw; attribute vec2 aLat; attribute vec4 aSeed; varying vec3 vC; varying float vA;',
+        'void main(){',
+        ' float spd = 2.4 + aSeed.w * 1.4;',
+        ' float z = mod(aSeed.z * 180.0 + uTime * spd, 180.0) - 40.0;',
+        ' float o = smoothstep(17.0, 24.0, z) * 0.34 + smoothstep(57.0, 64.0, z) * 0.36 + smoothstep(97.0, 104.0, z) * 0.30;',
+        ' vec2 wob = vec2(sin(uTime * 0.8 + aSeed.x * 40.0), cos(uTime * 0.7 + aSeed.y * 40.0)) * (2.2 * (1.0 - o) + 0.12);',
+        ' vec2 p = mix(aRaw + wob, aLat, smoothstep(0.30, 0.72, o));',
+        ' p *= 1.0 - 0.40 * smoothstep(0.80, 1.0, o);',
+        ' vec3 c = mix(uRaw, uBronze, smoothstep(0.0, 0.30, o));',
+        ' c = mix(c, uSilver, smoothstep(0.30, 0.66, o)); c = mix(c, uGold, smoothstep(0.66, 1.0, o));',
+        ' vC = c;',
+        ' vA = smoothstep(-40.0, -28.0, z) * (1.0 - smoothstep(128.0, 140.0, z)) * (0.30 + 0.70 * aSeed.w);',
+        ' vec4 mv = modelViewMatrix * vec4(p, z, 1.0);',
+        ' gl_PointSize = clamp(uSize * (0.6 + aSeed.w) * uPR * (60.0 / max(0.1, -mv.z)), 1.0, 40.0);',
+        ' gl_Position = projectionMatrix * mv;',
+        '}'
+      ].join('\n'),
+      fragmentShader: [
+        'varying vec3 vC; varying float vA;',
+        'void main(){ float d = length(gl_PointCoord - 0.5); float a = smoothstep(0.5, 0.0, d); gl_FragColor = vec4(vC, a * a * vA); }'
+      ].join('\n')
+    });
+    var points = new THREE.Points(pg, pm); points.frustumCulled = false; scene.add(points);
+
+    /* Placas: Bronze, Silver, Gold */
+    var W = 44, H = 28, plates = [];
+    function lineMat(c, o) { return new THREE.LineBasicMaterial({ color: c, transparent: true, opacity: o }); }
+    PZ.forEach(function (z, idx) {
+      var g = new THREE.Group(); g.position.z = z; var col = PCOL[idx];
+      var frame = new THREE.LineLoop(new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(-W / 2, -H / 2, 0), new THREE.Vector3(W / 2, -H / 2, 0), new THREE.Vector3(W / 2, H / 2, 0), new THREE.Vector3(-W / 2, H / 2, 0)]), lineMat(col, .4));
+      var gp = [], a, b;
+      for (a = -W / 2 + 4; a < W / 2; a += 4) gp.push(a, -H / 2, 0, a, H / 2, 0);
+      for (b = -H / 2 + 4; b < H / 2; b += 4) gp.push(-W / 2, b, 0, W / 2, b, 0);
+      var gg = new THREE.BufferGeometry(); gg.setAttribute('position', new THREE.Float32BufferAttribute(gp, 3));
+      var grid = new THREE.LineSegments(gg, lineMat(col, .12));
+      var fill = new THREE.Mesh(new THREE.PlaneGeometry(W, H), new THREE.MeshBasicMaterial({ color: col, transparent: true, opacity: .035, side: THREE.DoubleSide, depthWrite: false, blending: THREE.AdditiveBlending }));
+      var br = [], k = 4.5, sx = [-1, 1, 1, -1], sy = [-1, -1, 1, 1], q;
+      for (q = 0; q < 4; q++) { var cx = sx[q] * W / 2, cy = sy[q] * H / 2; br.push(cx, cy, 0, cx - sx[q] * k, cy, 0, cx, cy, 0, cx, cy - sy[q] * k, 0); }
+      var bg = new THREE.BufferGeometry(); bg.setAttribute('position', new THREE.Float32BufferAttribute(br, 3));
+      var brackets = new THREE.LineSegments(bg, lineMat(col, .95));
+      var ring = new THREE.Mesh(new THREE.RingGeometry(.97, 1, 72), new THREE.MeshBasicMaterial({ color: col, transparent: true, opacity: 0, side: THREE.DoubleSide, depthWrite: false, blending: THREE.AdditiveBlending }));
+      g.add(frame, grid, fill, brackets, ring); scene.add(g);
+      plates.push({ g: g, frame: frame, fill: fill, ring: ring, brackets: brackets });
+    });
+
+    /* Túnel de aristas y suelo */
+    var tp = [], ex = [-W / 2, W / 2], ey = [-H / 2, H / 2];
+    ex.forEach(function (px) { ey.forEach(function (py) { tp.push(px, py, -40, px, py, 140); }); });
+    var tg = new THREE.BufferGeometry(); tg.setAttribute('position', new THREE.Float32BufferAttribute(tp, 3));
+    scene.add(new THREE.LineSegments(tg, lineMat(0x7CF5B0, .09)));
+    var floor = new THREE.GridHelper(260, 52, 0x1F3F32, 0x12261E); floor.position.set(0, -17, 50);
+    floor.material.transparent = true; floor.material.opacity = .55; scene.add(floor);
+
+    /* Cristales: los casos de estudio */
+    var CZ = 140, CR = 13, ringG = new THREE.Group(); ringG.position.set(0, 3, CZ); scene.add(ringG);
+    var GEO = [new THREE.IcosahedronGeometry(3.2, 0), new THREE.OctahedronGeometry(3.5, 0), new THREE.DodecahedronGeometry(3.1, 0), new THREE.TetrahedronGeometry(3.9, 0)];
+    var CCOL = [C_GOLD, C_BRONZE, C_SILVER, C_GOLD], crystals = [], solids = [];
+    GEO.forEach(function (geo, n) {
+      var grp = new THREE.Group(), ang = n / 4 * Math.PI * 2;
+      grp.position.set(Math.cos(ang) * CR, 0, Math.sin(ang) * CR * .7);
+      var solid = new THREE.Mesh(geo, new THREE.MeshBasicMaterial({ color: CCOL[n], transparent: true, opacity: .10, side: THREE.DoubleSide, depthWrite: false, blending: THREE.AdditiveBlending }));
+      var em = n === 1 ? new THREE.LineDashedMaterial({ color: CCOL[n], transparent: true, opacity: .95, dashSize: .55, gapSize: .4 }) : lineMat(CCOL[n], .95);
+      var edges = new THREE.LineSegments(new THREE.EdgesGeometry(geo), em); if (n === 1) edges.computeLineDistances();
+      var core = new THREE.Mesh(new THREE.OctahedronGeometry(.45, 0), new THREE.MeshBasicMaterial({ color: CCOL[n], transparent: true, opacity: .9, blending: THREE.AdditiveBlending, depthWrite: false }));
+      solid.userData.idx = n; grp.add(solid, edges, core); ringG.add(grp);
+      crystals.push({ g: grp, solid: solid, edges: edges, core: core, h: 0, ph: n * 1.7 }); solids.push(solid);
+    });
+
+    /* Etiquetas HTML ancladas a puntos 3D */
+    var labBox = $('labels'), labs = [];
+    function addLab(txt, en, v3, cc) {
+      var el = doc.createElement('span'); el.className = 'lab'; el.style.setProperty('--c', cc); el.textContent = S.lang === 'en' ? en : txt;
+      el.setAttribute('data-es', txt); el.setAttribute('data-en', en); tr.push(el); labBox.appendChild(el); labs.push({ el: el, v: v3 });
+    }
+    addLab('BRONZE // CRUDO', 'BRONZE // RAW', new THREE.Vector3(-W / 2, H / 2 + 1.5, PZ[0]), '#E8B04A');
+    addLab('SILVER // LIMPIO', 'SILVER // CLEAN', new THREE.Vector3(-W / 2, H / 2 + 1.5, PZ[1]), '#E6EFEA');
+    addLab('GOLD // CONSUMO', 'GOLD // CONSUMPTION', new THREE.Vector3(-W / 2, H / 2 + 1.5, PZ[2]), '#7CF5B0');
+    ['EXP-01', 'EXP-02', 'EXP-03', 'EXP-04'].forEach(function (t, n) { addLab(t, t, new THREE.Vector3(0, 5.6, 0), CCOL[n].getStyle()); labs[labs.length - 1].crystal = n; });
+
+    /* Cámara: trayecto con el scroll */
+    var KP = [[0, 7, -36], [18, 8, 3], [-18, 8, 43], [18, 8, 83], [0, 10, 121], [0, 24, 158]].map(function (a) { return new THREE.Vector3(a[0], a[1], a[2]); });
+    var KL = [[0, 0, 12], [0, 0, 20], [0, 0, 60], [0, 0, 100], [0, 4, 140], [0, 2, 140]].map(function (a) { return new THREE.Vector3(a[0], a[1], a[2]); });
+    var curveP = new THREE.CatmullRomCurve3(KP, false, 'catmullrom', .5), curveL = new THREE.CatmullRomCurve3(KL, false, 'catmullrom', .5);
+    var vp = new THREE.Vector3(), vl = new THREE.Vector3(), ep = new THREE.Vector3(), ET = new THREE.Vector3(0, 0, 60), tmp = new THREE.Vector3();
+    var secs = [], ts = 0, intro = reduced ? 1 : 0, time = reduced ? 30 : 0, px = 0, py = 0, tx = 0, ty = 0, eb = 0;
+    var exo = { yaw: 2.6, pitch: .32, dist: 74, drag: false, lx: 0, ly: 0, idle: 0 };
+    function measure() {
+      secs = [].map.call(doc.querySelectorAll('[data-k]'), function (el) { var r = el.getBoundingClientRect(); return r.top + win.scrollY + r.height / 2; });
+    }
+    function resize() {
+      var w = win.innerWidth, h = win.innerHeight; renderer.setSize(w, h, false); camera.aspect = w / h; camera.updateProjectionMatrix();
+      if (composer) composer.setSize(w, h); measure();
+    }
+
+    /* Bloom suave */
+    var composer = null, bloom = null;
+    if (!isMobile && THREE.EffectComposer && THREE.RenderPass && THREE.UnrealBloomPass) {
+      composer = new THREE.EffectComposer(renderer); composer.addPass(new THREE.RenderPass(scene, camera));
+      bloom = new THREE.UnrealBloomPass(new THREE.Vector2(win.innerWidth, win.innerHeight), .55, .85, .12); composer.addPass(bloom);
+    }
+    api.bloom = function (crt) { if (bloom) bloom.strength = crt ? .55 : .22; };
+
+    /* Puntero y selección de cristales */
+    var ray = new THREE.Raycaster(), ndc = new THREE.Vector2(), hover = -1, moved = false;
+    win.addEventListener('pointermove', function (e) {
+      tx = (e.clientX / win.innerWidth) * 2 - 1; ty = (e.clientY / win.innerHeight) * 2 - 1; ndc.set(tx, -ty); moved = true;
+      if (exo.drag) { exo.yaw -= (e.clientX - exo.lx) * .006; exo.pitch = Math.max(-.2, Math.min(1.25, exo.pitch + (e.clientY - exo.ly) * .005)); exo.lx = e.clientX; exo.ly = e.clientY; exo.idle = 0; }
+    }, { passive: true });
+    canvas.addEventListener('pointerdown', function (e) { if (S.explore) { exo.drag = true; exo.lx = e.clientX; exo.ly = e.clientY; doc.body.classList.add('dragging'); } });
+    win.addEventListener('pointerup', function () { exo.drag = false; doc.body.classList.remove('dragging'); });
+    canvas.addEventListener('click', function () { if (hover >= 0 && !S.explore) openDrawer(hover); });
+    win.addEventListener('wheel', function (e) { if (S.explore) { exo.dist = Math.max(28, Math.min(130, exo.dist * Math.exp(e.deltaY * .001))); e.preventDefault(); } }, { passive: false });
+
+    var raf = 0, running = false, last = 0, dirty = true;
+    function update(dt) {
+      time += reduced ? 0 : dt; uni.uTime.value = time;
+      var y = win.scrollY + win.innerHeight * .5, t = 0, n = secs.length, j;
+      if (n) { if (y <= secs[0]) t = 0; else if (y >= secs[n - 1]) t = n - 1; else { for (j = 0; j < n - 1; j++) { if (y < secs[j + 1]) { t = j + (y - secs[j]) / (secs[j + 1] - secs[j]); break; } } } }
+      ts = reduced ? t : ts + (t - ts) * (1 - Math.exp(-dt * 3.2));
+      var u = Math.max(0, Math.min(1, ts / 5));
+      curveP.getPoint(u, vp); curveL.getPoint(u, vl);
+      if (intro < 1) { intro = Math.min(1, intro + dt / 3.8); var e = 1 - Math.pow(1 - intro, 3); vp.y += (1 - e) * 16; vp.z -= (1 - e) * 55; }
+      px += (tx - px) * (1 - Math.exp(-dt * 4)); py += (ty - py) * (1 - Math.exp(-dt * 4));
+      if (!reduced) { vp.x += px * 1.8; vp.y -= py * 1.1; }
+      eb += ((S.explore ? 1 : 0) - eb) * (1 - Math.exp(-dt * 3.2));
+      if (eb > .002) {
+        if (!exo.drag && !reduced) { exo.idle += dt; if (exo.idle > 1.5) exo.yaw += dt * .09; }
+        var cp = Math.cos(exo.pitch);
+        ep.set(ET.x + Math.sin(exo.yaw) * cp * exo.dist, ET.y + Math.sin(exo.pitch) * exo.dist, ET.z + Math.cos(exo.yaw) * cp * exo.dist);
+        vp.lerp(ep, eb); vl.lerp(ET, eb);
+      }
+      camera.position.copy(vp); camera.lookAt(vl);
+      /* placas */
+      plates.forEach(function (p, i) {
+        var act = Math.max(0, 1 - Math.abs(ts - (i + 1))), ph = (time * .32 + i * .34) % 1;
+        p.frame.material.opacity = .30 + .55 * act; p.fill.material.opacity = .03 + .08 * act; p.brackets.material.opacity = .6 + .4 * act;
+        p.ring.scale.setScalar(2 + ph * 26); p.ring.material.opacity = reduced ? 0 : (1 - ph) * (1 - ph) * .35;
+        p.g.rotation.z = reduced ? 0 : Math.sin(time * .2 + i) * .02;
+      });
+      /* cristales */
+      if (moved && !S.explore) {
+        ray.setFromCamera(ndc, camera); var hit = ray.intersectObjects(solids, false); hover = hit.length ? hit[0].object.userData.idx : -1;
+        canvas.style.cursor = hover >= 0 ? 'pointer' : ''; moved = false;
+      }
+      if (S.explore) hover = -1;
+      ringG.rotation.y += reduced ? 0 : dt * .09;
+      crystals.forEach(function (c, i) {
+        c.h += ((hover === i ? 1 : 0) - c.h) * (1 - Math.exp(-dt * 8));
+        c.g.rotation.y += reduced ? 0 : dt * (.35 + i * .07); c.g.rotation.x += reduced ? 0 : dt * .12;
+        c.g.position.y = reduced ? 0 : Math.sin(time * .9 + c.ph) * .7;
+        c.g.scale.setScalar(1 + c.h * .22); c.solid.material.opacity = .10 + c.h * .22; c.core.scale.setScalar(1 + c.h * 1.4 + (reduced ? 0 : Math.sin(time * 2 + c.ph) * .15));
+      });
+      /* etiquetas */
+      labs.forEach(function (lb) {
+        if (lb.crystal !== undefined) { crystals[lb.crystal].g.getWorldPosition(tmp); tmp.y += 5.2; } else { tmp.copy(lb.v); }
+        var d = camera.position.distanceTo(tmp); tmp.project(camera);
+        var vis = tmp.z < 1 && Math.abs(tmp.x) < 1.05 && Math.abs(tmp.y) < 1.05, a = Math.max(0, Math.min(1, 1.15 - (d - 14) / 62));
+        if (S.explore) a = vis ? Math.min(1, a + .35) : 0;
+        lb.el.style.opacity = vis ? a.toFixed(2) : 0;
+        if (vis) lb.el.style.transform = 'translate(' + ((tmp.x * .5 + .5) * win.innerWidth).toFixed(1) + 'px,' + ((-tmp.y * .5 + .5) * win.innerHeight).toFixed(1) + 'px) translate(-50%,-120%)';
+      });
+    }
+    function render() { if (composer) composer.render(); else renderer.render(scene, camera); }
+    function frame(now) {
+      if (!running) return; raf = requestAnimationFrame(frame);
+      var dt = Math.min(.05, (now - last) / 1000); last = now; update(dt); render();
+    }
+    function start() {
+      if (running) return; last = performance.now();
+      if (reduced) { update(1); render(); return; }
+      running = true; raf = requestAnimationFrame(frame);
+    }
+    function stop() { running = false; cancelAnimationFrame(raf); }
+    api.start = start; api.stop = stop; api.ready = true;
+    api.kick = function () { if (reduced && S.on) { update(1); render(); } };
+    api.explore = function (v) { exo.idle = 0; if (reduced) { update(1); render(); } };
+    win.addEventListener('resize', function () { resize(); api.kick(); });
+    win.addEventListener('scroll', function () { if (reduced && S.on) api.kick(); }, { passive: true });
+    doc.addEventListener('visibilitychange', function () { if (doc.hidden) stop(); else if (S.on) start(); });
+    win.addEventListener('load', measure);
+    if (doc.fonts && doc.fonts.ready) doc.fonts.ready.then(function () { measure(); });
+    resize(); if (bloom) api.bloom(S.crt); start();
+  }
+
+  applyLang();
+  /* El contenido ya está pintado: el 3D se carga después, sin tocar el LCP */
+  function later(fn) { if (win.requestIdleCallback) win.requestIdleCallback(fn, { timeout: 1500 }); else setTimeout(fn, 400); }
+  var webgl = false;
+  try { var tc = doc.createElement('canvas'); webgl = !!(win.WebGLRenderingContext && (tc.getContext('webgl') || tc.getContext('experimental-webgl'))); } catch (e) { webgl = false; }
+  if (!webgl) { fail(); } else { if (doc.readyState === 'complete') later(boot3D); else win.addEventListener('load', function () { later(boot3D); }); }
+})();
+</script>
+</body>
+</html>

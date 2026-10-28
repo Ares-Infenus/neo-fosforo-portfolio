@@ -1,0 +1,59 @@
+---
+import { getCollection, render, type CollectionEntry } from 'astro:content';
+import Base from '../../../layouts/Base.astro';
+import Todo from '../../../components/Todo.astro';
+import { t, type Lang } from '../../../i18n/ui';
+
+export async function getStaticPaths() {
+  const cases = await getCollection('cases');
+  return cases.map((entry) => ({ params: { lang: entry.data.lang, slug: entry.data.permalink }, props: { entry } }));
+}
+
+interface Props { entry: CollectionEntry<'cases'> }
+const { entry } = Astro.props;
+const lang = entry.data.lang as Lang;
+const T = t(lang);
+const { Content } = await render(entry);
+const d = entry.data;
+const tone = d.metric.tone === 'wip' ? 'am' : d.metric.tone === 'none' ? 'lbl' : '';
+---
+<Base lang={lang} title={`${d.title} — Sebastián Pinzón`} description={d.summary} readable>
+  <div class="readbar needs-js" id="readbar" aria-hidden="true"></div>
+  <main id="contenido">
+    <section class="casepage">
+      <div class="wrap">
+        <article>
+          <a class="back" href={`/${lang}/#casos`}>{T('case.back')}</a>
+          <div class="lbl">{d.code} // {d.domain}</div>
+          <h1 style={`view-transition-name:t-${d.code.toLowerCase()}`}>{d.title}</h1>
+          <p class="tag">{d.summary}</p>
+
+          <div class="pn facts rv" style="--d:.35s">
+            <div class="hd"><span>{d.code}</span><span>{d.status}</span></div>
+            <div class="bd">
+              <div class="row"><span class="lbl">{d.metric.label}</span><b class={tone}>{d.metric.count
+                ? <span class="cnt" data-to={d.metric.count.to} data-dec={d.metric.count.dec} data-suf={d.metric.count.suf}>{d.metric.value}</span>
+                : d.metric.value}</b></div>
+              <div class="row"><span class="lbl">{T('case.stack')}</span><b>{d.stack.join(' · ')}</b></div>
+              <div class="row"><span class="lbl">{T('case.status')}</span><b>{d.status}</b></div>
+              <div class="row"><span class="lbl">{T('case.date')}</span><b>{d.date}</b></div>
+              {d.tests !== undefined && <div class="row"><span class="lbl">{T('case.tests')}</span><b>{d.tests} · pytest</b></div>}
+              <div class="cta case-links">
+                <a class="btn solid" href={d.repo} rel="noopener" target="_blank">{T('case.repo')}</a>
+                {d.demo && <a class="btn" href={d.demo} rel="noopener" target="_blank">{T('case.demo')}</a>}
+              </div>
+            </div>
+          </div>
+
+          <div class="prose">
+            <Content components={{ Todo }} />
+          </div>
+        </article>
+      </div>
+    </section>
+  </main>
+</Base>
+
+<script>
+  import '../../../scripts/case';
+</script>

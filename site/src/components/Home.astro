@@ -1,0 +1,335 @@
+---
+import { getCollection } from 'astro:content';
+import { Image } from 'astro:assets';
+import Base from '../layouts/Base.astro';
+import { t, type Lang } from '../i18n/ui';
+import { otherProjects, experience, orgName, education, certs, stack, totals } from '../data/profile';
+
+interface Props {
+  lang: Lang;
+  /** Escena 3D de fondo: 'pipeline' (túnel original) o 'mesa' (mesa táctica holográfica). */
+  scene?: 'pipeline' | 'mesa';
+  noindex?: boolean;
+}
+const { lang, scene = 'mesa', noindex = false } = Astro.props;
+const T = t(lang);
+
+// Foto de perfil: se usa la que haya en src/assets/perfil.(jpg|jpeg|png|webp). Si no hay, se muestra [FOTO].
+const photos = import.meta.glob<{ default: ImageMetadata }>('../assets/perfil.{jpg,jpeg,png,webp}', { eager: true });
+const photo = Object.values(photos)[0]?.default;
+
+const cases = (await getCollection('cases', (c) => c.data.lang === lang)).sort((a, b) => a.data.order - b.data.order);
+const caseUrl = (slug: string) => `/${lang}/work/${slug}/`;
+const toneClass = { ok: '', wip: 'w', none: 'n' } as const;
+
+// Datos para el cajón y la escena (solo lo que ya está en el HTML).
+const drawerData = cases.map((c) => ({
+  code: c.data.code,
+  title: c.data.title,
+  domain: c.data.domain,
+  summary: c.data.summary,
+  metric: c.data.metric,
+  stack: c.data.stack,
+  status: c.data.status,
+  url: caseUrl(c.data.permalink),
+}));
+const strings = {
+  close: T('drawer.close'),
+  status: T('drawer.status'),
+  note: T('drawer.note'),
+  full: T('drawer.full'),
+  labels: lang === 'en'
+    ? ['BRONZE // RAW', 'SILVER // CLEAN', 'GOLD // CONSUMPTION']
+    : ['BRONZE // CRUDO', 'SILVER // LIMPIO', 'GOLD // CONSUMO'],
+};
+// Riel de progreso: una marca por tramo del pipeline.
+const rail = [
+  { id: 'hero', label: T('rail.hero'), c: 'var(--dim)' },
+  { id: 'bronze', label: 'BRONZE', c: 'var(--amb)' },
+  { id: 'silver', label: 'SILVER', c: 'var(--ice)' },
+  { id: 'gold', label: 'GOLD', c: 'var(--fg)' },
+  { id: 'casos', label: T('rail.cases'), c: 'var(--fg)' },
+  { id: 'perfil', label: T('rail.profile'), c: 'var(--ice)' },
+  { id: 'contacto', label: T('rail.contact'), c: 'var(--fg)' },
+];
+---
+<Base lang={lang} has3d noindex={noindex}>
+  <Fragment slot="behind">
+    <canvas id="gl" aria-hidden="true" data-scene={scene}></canvas>
+    <div id="glow" aria-hidden="true"></div>
+    <div id="labels" aria-hidden="true"></div>
+    <div id="sweep" aria-hidden="true"></div>
+  </Fragment>
+
+  <main id="contenido">
+    <section id="hero" data-k="0">
+      <div class="wrap">
+        <div class="hero-l">
+          <div class="boot" id="boot" aria-hidden="true">
+            <span class="bl"><b data-type>{T('boot.1')}</b></span>
+            <span class="bl"><b data-type>{T('boot.2')}</b> <i class="meter"></i> <b data-type class="ok">OK</b></span>
+            <span class="bl"><b data-type>{T('boot.3')}</b><i class="cur"></i></span>
+          </div>
+          <h1 id="name" data-in style="--t:.35s">SEBASTIÁN PINZÓN</h1>
+          <p class="role" id="role" data-in style="--t:1.05s">{T('hero.role')}</p>
+          <p class="tag" data-in style="--t:1.35s">{T('hero.tag')}</p>
+          <div class="chips">
+            <span class="chip" data-in style="--t:1.55s">{T('hero.chip.1')}</span>
+            <span class="chip" data-in style="--t:1.65s">{T('hero.chip.2')}</span>
+            <span class="chip" data-in style="--t:1.75s">{T('hero.chip.3')}</span>
+          </div>
+          <div class="cta">
+            <a class="btn solid" href="#casos" data-in style="--t:1.85s">{T('hero.cta.cases')}&nbsp;▸</a>
+            <button class="btn needs-js" id="bExplore" type="button" hidden data-in style="--t:1.95s">{T('hero.cta.explore')}</button>
+            <a class="btn" href="#contacto" data-in style="--t:2.05s">{T('hero.cta.contact')}</a>
+            <a class="btn" href={T('cv.file')} download data-in style="--t:2.15s">{T('cv.cta')}&nbsp;↓</a>
+          </div>
+        </div>
+        <div class="hero-r">
+          <div class="pn rv idcard" id="proof">
+            <div class="hd"><span>{T('id.title')}</span><span>SYS-04</span></div>
+            <div class="bd">
+              <div class="id-top">
+                <figure class="id-photo">
+                  {photo
+                    ? <Image src={photo} alt={T('id.photoAlt')} widths={[128, 256, 384]} sizes="128px" loading="eager" fetchpriority="high" />
+                    : <span class="id-empty" role="img" aria-label={T('id.photoTodo')}>
+                        <svg viewBox="0 0 64 64" aria-hidden="true"><circle cx="32" cy="24" r="11" /><path d="M10 60c2-13 11-20 22-20s20 7 22 20" /></svg>
+                        <span class="todo">[{T('id.photoTodo')}]</span>
+                      </span>}
+                  <i class="id-scan" aria-hidden="true"></i>
+                </figure>
+                <dl class="id-meta">
+                  <div><dt>{T('id.role')}</dt><dd>{T('hero.role')}</dd></div>
+                  <div><dt>{T('id.base')}</dt><dd>{T('id.baseVal')}</dd></div>
+                  <div><dt>{T('id.status')}</dt><dd class="id-ok">{T('id.statusVal')}</dd></div>
+                </dl>
+              </div>
+              <div class="id-sep"><span>{T('proof.title')}</span><span>GITHUB</span></div>
+              <div class="row"><span class="lbl">{T('proof.tests')}</span><b><span class="cnt" data-to={totals.tests}>{totals.tests}</span> <small>{T('proof.testsIn')}</small></b></div>
+              <div class="row"><span class="lbl">{T('proof.ci')}</span><b><span class="cnt" data-to={totals.ci}>{totals.ci}</span> {T('proof.ciVal')}</b></div>
+              <div class="row"><span class="lbl">{T('proof.docker')}</span><b><span class="cnt" data-to={totals.docker}>{totals.docker}</span> {T('proof.dockerVal')}</b></div>
+              <div class="row"><span class="lbl">{T('proof.api')}</span><b><a href="https://penguin-ml-api-bmrr.onrender.com/docs" rel="noopener" target="_blank">Penguin API ↗</a></b></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="scrollhint" aria-hidden="true">SCROLL ▾</div>
+    </section>
+
+    <section id="bronze" data-k="1">
+      <div class="wrap">
+        <div class="chap c-b pn rv">
+          <div class="hd"><span>01 // BRONZE</span><span>{T('bronze.tag')}</span></div>
+          <div class="bd">
+            <h2 data-decode>{T('bronze.h')}</h2>
+            <p>{T('bronze.p')}</p>
+            <div class="step"><span class="dot"></span><span class="lbl">{T('bronze.state')}</span></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="silver" data-k="2">
+      <div class="wrap">
+        <div class="chap r c-s pn rv">
+          <div class="hd"><span>02 // SILVER</span><span>{T('silver.tag')}</span></div>
+          <div class="bd">
+            <h2 data-decode>{T('silver.h')}</h2>
+            <p>{T('silver.p')}</p>
+            <div class="step"><span class="dot"></span><span class="lbl">{T('silver.state')}</span></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="gold" data-k="3">
+      <div class="wrap">
+        <div class="chap c-g pn rv">
+          <div class="hd"><span>03 // GOLD</span><span>{T('gold.tag')}</span></div>
+          <div class="bd">
+            <h2 data-decode>{T('gold.h')}</h2>
+            <p>{T('gold.p')}</p>
+            <div class="chips">
+              <span class="chip">{T('gold.chip.1')}</span>
+              <span class="chip">{T('gold.chip.2')}</span>
+              <span class="chip">{T('gold.chip.3')}</span>
+            </div>
+            <div class="step"><span class="lbl">{T('gold.in')}</span></div>
+            <div class="cta"><a class="btn solid" href="#casos">{T('gold.cta')}&nbsp;▾</a></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="casos" data-k="4">
+      <div class="wrap">
+        <div class="lbl rv">02 // {T('cases.kicker')}</div>
+        <h2 class="rv" data-decode>{T('cases.h')}</h2>
+        <p class="sub rv">{T('cases.sub')}</p>
+        <div class="grid">
+          {cases.map((c, i) => (
+            <a class="case pn rv" href={caseUrl(c.data.permalink)} data-case={i} style={`--d:${0.05 + i * 0.1}s`}>
+              <div class="hd"><span>{c.data.code}</span><span>{c.data.domain}</span></div>
+              <div class="bd">
+                <span class="t" style={`view-transition-name:t-${c.data.code.toLowerCase()}`}>{c.data.title}</span>
+                <span class="lbl">{c.data.metric.label}</span>
+                <span class={`m ${toneClass[c.data.metric.tone]}`}>
+                  {c.data.metric.count
+                    ? <span class="cnt" data-to={c.data.metric.count.to} data-dec={c.data.metric.count.dec} data-suf={c.data.metric.count.suf}>{c.data.metric.value}</span>
+                    : c.data.metric.value}
+                </span>
+                <span class="d">{c.data.summary}</span>
+                <span class="go">{T('cases.open')}</span>
+              </div>
+            </a>
+          ))}
+        </div>
+
+        <div class="others">
+          <h3 class="others-h rv" data-decode>{T('others.h')}</h3>
+          <p class="sub rv">{T('others.sub')}</p>
+          <ul class="others-list">
+            {otherProjects.map((p, i) => (
+              <li class="op rv" style={`--d:${(i % 2) * 0.08}s`}>
+                <div class="op-top">
+                  <h4>{p.name}</h4>
+                  <span class="lbl">{p.date[lang]}</span>
+                </div>
+                <p class="op-line">{p.line[lang]}</p>
+                <p class="op-fact">{p.fact[lang]}</p>
+                {p.caveat && <p class="op-cav">{p.caveat[lang]}</p>}
+                <div class="op-foot">
+                  <span class="op-stack">{p.stack.join(' · ')}</span>
+                  <span class="op-meta">
+                    <span>{p.tests > 0 ? `${p.tests} ${T('others.tests')}` : T('others.noTests')}</span>
+                    {p.ci && <span>CI</span>}
+                    {p.docker && <span>DOCKER</span>}
+                  </span>
+                </div>
+                <div class="op-links">
+                  <a href={p.repo} rel="noopener" target="_blank">{T('others.repo')} ↗</a>
+                  {p.demo && <a href={p.demo} rel="noopener" target="_blank">{T('others.demo')} ↗</a>}
+                </div>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <section id="perfil">
+      <div class="wrap">
+        <div class="lbl rv">03 // {T('profile.kicker')}</div>
+        <h2 class="rv" data-decode>{T('profile.h')}</h2>
+        <div class="two" style="margin-top:28px">
+          <div class="pn big rv">
+            <div class="hd"><span>{T('profile.exp')}</span><span>{experience.length}</span></div>
+            <div class="bd">
+              <ol class="tl">
+                {experience.map((r) => (
+                  <li>
+                    <span class="tl-when">{r.when[lang]}</span>
+                    <div class="tl-body">
+                      <b>{orgName(r, lang)}</b>
+                      <span class="tl-title">{r.title[lang]}</span>
+                      <p>{r.text[lang]}</p>
+                    </div>
+                  </li>
+                ))}
+              </ol>
+            </div>
+          </div>
+          <div class="pn rv">
+            <div class="hd"><span>{T('profile.edu')}</span><span>UNAL</span></div>
+            <div class="bd">
+              <p class="edu-school">{education.school}</p>
+              <p class="edu-prog">{education.program[lang]}</p>
+              <p class="edu-det">{education.detail[lang]}</p>
+              <div class="edu-extra"><span class="lbl">{T('profile.honor')}</span><p>{education.honor[lang]}</p></div>
+              <div class="edu-extra"><span class="lbl">{T('profile.langs')}</span><p>{education.languages[lang]}</p></div>
+              <div class="id-sep"><span>{T('profile.stack')}</span><span></span></div>
+              <div class="stk"><span class="lbl">{T('profile.stackData')}</span><div class="chips">{stack.data.map((x) => <span class="chip">{x}</span>)}</div></div>
+              <div class="stk"><span class="lbl">{T('profile.stackMl')}</span><div class="chips">{stack.ml.map((x) => <span class="chip">{x}</span>)}</div></div>
+              <div class="stk"><span class="lbl">{T('profile.stackEng')}</span><div class="chips">{stack.eng.map((x) => <span class="chip">{x}</span>)}</div></div>
+            </div>
+          </div>
+        </div>
+        <div class="pn rv certs-pn">
+          <div class="hd"><span>{T('profile.certs')}</span><span>{certs.length}</span></div>
+          <div class="bd">
+            <ul class="certs">
+              {certs.map((c) => (
+                <li><b>{c.name}</b><span>{c.by}</span><span class="lbl">{c.date[lang]}</span></li>
+              ))}
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="contacto" data-k="5">
+      <div class="wrap">
+        <div class="lbl rv">04 // {T('contact.kicker')}</div>
+        <h2 class="rv" data-decode>{T('contact.h')}</h2>
+        <div class="two" style="margin-top:28px">
+          <div class="pn rv">
+            <div class="hd"><span>{T('now.title')}</span><span>3</span></div>
+            <div class="bd">
+              <div class="row"><span class="lbl">OMDENA × HOT fAIr</span><b>{T('now.omdena')}</b></div>
+              <div class="row"><span class="lbl">{T('now.next')}</span><b>{T('now.nextVal')}</b></div>
+              <div class="row"><span class="lbl">{T('now.search')}</span><b>{T('now.searchVal')}</b></div>
+            </div>
+          </div>
+          <div class="pn big rv">
+            <div class="hd"><span>{T('about.title')}</span><span>README</span></div>
+            <div class="bd"><p>{T('about.p1')}</p><p style="margin-top:12px">{T('about.p2')}</p></div>
+          </div>
+          <div class="pn rv">
+            <div class="hd"><span>TERMINAL</span><span>{T('term.open')}</span></div>
+            <div class="bd">
+              <div class="row"><span class="lbl">EMAIL</span><a href="mailto:spinzonzambrano@gmail.com">spinzonzambrano@gmail.com</a></div>
+              <div class="row"><span class="lbl">GITHUB</span><a href="https://github.com/Ares-Infenus" rel="noopener">Ares-Infenus</a></div>
+              <div class="row"><span class="lbl">LINKEDIN</span><a href="https://www.linkedin.com/in/sebastiandpinzon" rel="noopener">sebastiandpinzon</a></div>
+              <div class="row"><span class="lbl">CV</span><span class="cv-links"><a href="/cv/sebastian-pinzon-cv-es.pdf" download hreflang="es">{T('cv.es')} ↓</a><a href="/cv/sebastian-pinzon-cv-en.pdf" download hreflang="en">{T('cv.en')} ↓</a></span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <Fragment slot="overlay">
+    <nav class="rail" id="rail" aria-label={T('rail.label')}>
+      <i class="rail-track" aria-hidden="true"><i class="rail-fill" id="railFill"></i></i>
+      {rail.map((r) => (
+        <a href={`#${r.id}`} data-rail={r.id} style={`--c:${r.c}`}><span class="rl">{r.label}</span></a>
+      ))}
+    </nav>
+    <div class="hud" id="hud" role="region" aria-label="3D">
+      <span>{T('hud.hint')}</span>
+      <button class="btn" id="bExit" type="button" style="min-height:44px">{T('hud.exit')}</button>
+    </div>
+
+    <div class="veil" id="veil"></div>
+    <aside id="drawer" role="dialog" aria-modal="true" aria-labelledby="dTitle" aria-hidden="true">
+      <button class="x" id="dClose" type="button" aria-label={T('drawer.close')}>✕</button>
+      <div class="lbl" id="dId"></div>
+      <h2 id="dTitle"></h2>
+      <div class="lbl" id="dDom"></div>
+      <div style="margin-top:24px" class="lbl" id="dML"></div>
+      <div class="m" id="dMV"></div>
+      <p id="dDesc"></p>
+      <div class="tags" id="dTags"></div>
+      <div class="row"><span class="lbl">{T('drawer.status')}</span><b id="dSt"></b></div>
+      <p class="lbl" style="margin-top:16px;text-transform:none;letter-spacing:.02em;font-size:12px">{T('drawer.note')}</p>
+      <div class="cta"><a class="btn solid" id="dFull" href="#">{T('drawer.full')}</a></div>
+    </aside>
+
+    <script id="nf-data" type="application/json" set:html={JSON.stringify({ cases: drawerData, strings })} />
+  </Fragment>
+</Base>
+
+<script>
+  import '../scripts/home';
+</script>

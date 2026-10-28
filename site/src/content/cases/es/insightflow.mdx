@@ -1,0 +1,56 @@
+---
+lang: es
+permalink: insightflow-nlp-api
+code: EXP-03
+order: 2
+title: InsightFlow NLP
+domain: ML en producción
+summary: API REST y dashboard que extraen sentimiento, entidades y temas de texto no estructurado, como reseñas o tickets de soporte.
+metric:
+  label: LATENCIA · SENTIMIENTO EN CALIENTE
+  value: ~170 ms
+  tone: ok
+stack: [FastAPI, Pydantic, HuggingFace Transformers, spaCy, Gensim, Streamlit, Docker]
+status: FUNCIONAL · MODELOS PREENTRENADOS
+date: mar. 2026
+repo: https://github.com/Ares-Infenus/InsightFlow_NLP
+tests: 44
+---
+
+## Resumen
+API REST y dashboard que extraen sentimiento, entidades nombradas y temas de texto no estructurado, como reseñas de productos o tickets de soporte.
+
+## Ficha técnica
+| Campo | Valor |
+| --- | --- |
+| Servicio | FastAPI con 8 endpoints |
+| Entrada | Texto individual, lotes de hasta 500 textos o archivo CSV |
+| Despliegue | Docker Compose (API + dashboard) |
+| Estado | Funcional con modelos preentrenados |
+
+## Qué construí
+- Servicio **FastAPI con 8 endpoints** y validación con Pydantic.
+- **Dashboard en Streamlit** para explorar los resultados.
+- Integración de modelos preentrenados: **Twitter-RoBERTa** para sentimiento, **spaCy `en_core_web_trf`** para entidades y **LDA de Gensim** para temas.
+- Despliegue con Docker Compose.
+
+## Ingeniería
+- 44 tests con pytest.
+- CI en GitHub Actions.
+
+## Resultados
+| Medida | Valor |
+| --- | --- |
+| Latencia por petición de sentimiento (en caliente) | ~170 ms |
+| Exactitud sobre 5.000 reseñas de Amazon, sin ajuste fino | 69,7 % |
+| Macro-F1 sobre las mismas reseñas | 0,615 |
+
+## Limitaciones
+- El modelo de sentimiento se entrenó con tweets, no con reseñas: por eso la exactitud sobre Amazon es moderada.
+- El script de ajuste fino con HuggingFace Trainer está incluido pero **todavía no se ha ejecutado**.
+
+## Próximos pasos
+Ejecutar el ajuste fino sobre reseñas y comparar contra la línea base de 69,7 %.
+
+## Reproducibilidad
+Instrucciones de ejecución con Docker Compose en el README del repositorio.

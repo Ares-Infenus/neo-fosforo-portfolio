@@ -1,0 +1,320 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>Sebastián Pinzón — Data Engineer</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&amp;display=swap">
+<style>
+body{margin:0;background:#050807}
+a{color:#39FF88;text-decoration:none}
+.lbl{font-size:11px;line-height:16px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:#4FB57A}
+.pn{position:relative;border:1px solid #2F8F59;background:#0B130E}
+.pn::before,.pn::after{content:"";position:absolute;bottom:-4px;width:10px;height:10px;border-bottom:2px solid #39FF88}
+.pn::before{left:-4px;border-left:2px solid #39FF88}
+.pn::after{right:-4px;border-right:2px solid #39FF88}
+.hd{display:flex;justify-content:space-between;gap:12px;padding:2px 12px;background:#39FF88;color:#050807;font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;text-shadow:none}
+.btn{display:inline-flex;align-items:center;justify-content:center;min-height:48px;padding:0 20px;border:1px solid #39FF88;background:transparent;color:#39FF88;font-family:inherit;font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;cursor:pointer}
+.btn:hover{background:#39FF88;color:#050807;text-shadow:none}
+.btn.solid{background:#39FF88;color:#050807;text-shadow:none}
+.btn.solid:hover{background:#050807;color:#39FF88}
+.tg{min-height:44px;padding:0 14px;font-family:inherit;font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;cursor:pointer}
+.bl{opacity:0;animation:bl .01s steps(1) forwards}
+.bl1{animation-delay:.2s}.bl2{animation-delay:.7s}.bl3{animation-delay:1.2s}
+@keyframes bl{to{opacity:1}}
+@keyframes blink{50%{opacity:0}}
+.blink{animation:blink 1s steps(1) infinite}
+.pk{position:absolute;left:12px;width:8px;height:8px;background:#39FF88;animation:pk 3.2s linear infinite}
+.pk2{animation-delay:-1.6s}
+@keyframes pk{to{transform:translateX(380px)}}
+.plane span{display:block}
+@media (prefers-reduced-motion:reduce){.bl{opacity:1;animation:none}.pk,.blink{animation:none}}
+</style>
+</helmet>
+<div style="position:relative;overflow:hidden;background:#050807;color:#39FF88;font-family:'JetBrains Mono',ui-monospace,Menlo,Consolas,monospace;font-size:{{fs}}px;line-height:1.6;text-shadow:{{glow}}">
+
+<sc-if value="{{isCrt}}" hint-placeholder-val="{{true}}">
+<div style="position:absolute;inset:0;pointer-events:none;z-index:60;background:repeating-linear-gradient(to bottom,rgba(0,0,0,.28) 0,rgba(0,0,0,.28) 1px,transparent 1px,transparent 3px)"></div>
+</sc-if>
+
+<!-- Barra superior -->
+<div style="display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:12px;padding:4px 48px;background:#39FF88;color:#050807;text-shadow:none;font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase">
+<span>SYS-04 // {{t.sys}}</span>
+<span style="display:flex;flex-wrap:wrap;align-items:center;gap:8px">
+<button class="tg" onClick="{{setCrt}}" style="{{crtStyle}}">CRT</button>
+<button class="tg" onClick="{{setLeg}}" style="{{legStyle}}">{{t.leg}}</button>
+<span aria-hidden="true">|</span>
+<button class="tg" onClick="{{setEs}}" style="{{esStyle}}">ES</button>
+<button class="tg" onClick="{{setEn}}" style="{{enStyle}}">EN</button>
+</span>
+</div>
+
+<!-- Banner de acceso -->
+<div style="display:flex;flex-wrap:wrap;justify-content:space-between;gap:12px;padding:4px 48px;border-bottom:1px solid #2F8F59;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:#4FB57A">
+<span><span class="blink" style="display:inline-block;width:7px;height:7px;background:#FF4D3D;margin-right:8px"></span>{{t.banner}}</span>
+<span>{{t.session}}</span>
+</div>
+
+<!-- Hero -->
+<section style="position:relative;display:flex;flex-wrap:wrap;gap:48px;padding:72px 48px 72px;border-bottom:1px solid #2F8F59">
+<sc-if value="{{isCrt}}" hint-placeholder-val="{{true}}">
+<div style="position:absolute;inset:0;pointer-events:none;z-index:5;background:radial-gradient(ellipse at center,transparent 45%,rgba(0,0,0,.6) 100%)"></div>
+</sc-if>
+<div style="flex:999 1 560px;min-width:0">
+<div style="font-size:12px;line-height:20px;color:#4FB57A;min-height:60px">
+<span class="bl bl1" style="display:block">{{t.boot1}}</span>
+<span class="bl bl2" style="display:block">{{t.boot2}}</span>
+<span class="bl bl3" style="display:block">{{t.boot3}}</span>
+</div>
+<h1 style="margin:24px 0 8px;font-size:clamp(36px,7vw,88px);line-height:1;font-weight:700;letter-spacing:-.02em;text-shadow:{{glowStrong}}">SEBASTIÁN PINZÓN</h1>
+<p style="margin:0;font-size:20px;letter-spacing:.16em;text-transform:uppercase">{{t.role}}</p>
+<p style="margin:16px 0 0;max-width:620px;font-size:16px;line-height:26px;color:#4FB57A">{{t.tagline}}</p>
+<div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:24px">
+<sc-for list="{{t.chips}}" as="chip" hint-placeholder-count="3">
+<span style="border:1px solid #2F8F59;padding:0 10px;font-size:11px;line-height:24px;letter-spacing:.08em;text-transform:uppercase;color:#4FB57A">{{chip.label}}</span>
+</sc-for>
+</div>
+<div style="display:flex;flex-wrap:wrap;gap:12px;margin-top:32px">
+<a class="btn solid" href="#casos">{{t.cta1}} ▸</a>
+<a class="btn" href="#contacto">{{t.cta2}}</a>
+</div>
+</div>
+<div style="flex:1 1 340px;min-width:0;align-self:flex-end">
+<div class="pn">
+<div class="hd"><span>{{t.proofTitle}}</span><span>4</span></div>
+<div style="padding:12px 16px">
+<sc-for list="{{t.proof}}" as="p" hint-placeholder-count="4">
+<div style="display:flex;justify-content:space-between;gap:16px;padding:6px 0;border-bottom:1px solid rgba(47,143,89,.45)">
+<span class="lbl">{{p.k}}</span><span style="font-weight:700">{{p.v}}</span>
+</div>
+</sc-for>
+</div>
+</div>
+</div>
+</section>
+
+<!-- Pipeline 2.5D -->
+<section id="pipeline" style="padding:72px 48px;border-bottom:1px solid #2F8F59">
+<div class="lbl">01 // {{t.pipeKicker}}</div>
+<h2 style="margin:4px 0 8px;font-size:32px;line-height:1.2;font-weight:700;letter-spacing:.02em">{{t.pipeTitle}}</h2>
+<p style="margin:0 0 24px;max-width:680px;color:#4FB57A">{{t.pipeSub}}</p>
+<div style="display:flex;flex-wrap:wrap;gap:24px">
+<div style="position:relative;flex:999 1 620px;min-width:0;height:480px;border:1px solid #2F8F59;background:#050807;overflow:hidden;perspective:1200px;display:flex;align-items:center;justify-content:center">
+<div style="position:relative;width:420px;height:260px;transform-style:preserve-3d;transform:{{sceneT}};transition:transform .6s steps(10)">
+<div style="position:absolute;left:60px;top:60px;width:1px;height:90px;background:#39FF88;transform-origin:top center;transform:translateZ(0px) rotateX(90deg)"></div>
+<div style="position:absolute;left:360px;top:190px;width:1px;height:90px;background:#39FF88;transform-origin:top center;transform:translateZ(0px) rotateX(90deg)"></div>
+<div style="position:absolute;left:60px;top:60px;width:1px;height:90px;background:#39FF88;transform-origin:top center;transform:translateZ(90px) rotateX(90deg)"></div>
+<div style="position:absolute;left:360px;top:190px;width:1px;height:90px;background:#39FF88;transform-origin:top center;transform:translateZ(90px) rotateX(90deg)"></div>
+<sc-for list="{{layers}}" as="L" hint-placeholder-count="3">
+<button class="plane" onClick="{{L.pick}}" aria-label="{{L.aria}}" style="{{L.style}}">
+<span class="lbl" style="position:absolute;left:12px;top:8px;color:{{L.color}}">{{L.name}} // {{L.tag}}</span>
+<span style="position:absolute;left:42px;top:42px;width:36px;height:36px;border:1px solid #39FF88"></span>
+<span style="position:absolute;left:192px;top:112px;width:36px;height:36px;border:1px solid #39FF88"></span>
+<span style="position:absolute;left:342px;top:172px;width:36px;height:36px;border:1px solid #39FF88"></span>
+<span class="pk" style="top:130px"></span>
+<span class="pk pk2" style="top:190px"></span>
+</button>
+</sc-for>
+</div>
+<div style="position:absolute;left:16px;bottom:16px;display:flex;flex-wrap:wrap;gap:8px;z-index:10">
+<button class="btn" onClick="{{rotL}}" style="min-height:44px;padding:0 14px;background:#050807">{{t.rotL}}</button>
+<button class="btn" onClick="{{rotR}}" style="min-height:44px;padding:0 14px;background:#050807">{{t.rotR}}</button>
+<button class="btn" onClick="{{v2d}}" style="min-height:44px;padding:0 14px;background:#050807">{{t.v2}}</button>
+<button class="btn" onClick="{{v25}}" style="min-height:44px;padding:0 14px;background:#050807">{{t.v25}}</button>
+</div>
+<div class="lbl" style="position:absolute;right:16px;top:12px;z-index:10">{{t.pipeHint}}</div>
+</div>
+<div style="flex:1 1 320px;min-width:0">
+<div class="pn">
+<div class="hd"><span>{{sel.name}} // {{sel.tag}}</span><span>{{t.layerWord}} {{sel.num}}/3</span></div>
+<div style="padding:16px">
+<p style="margin:0 0 16px">{{sel.desc}}</p>
+<div style="display:flex;justify-content:space-between;gap:12px;padding:6px 0;border-top:1px solid rgba(47,143,89,.45)"><span class="lbl">{{t.metricWord}}</span><span style="color:#4FB57A">{{t.noData}}</span></div>
+<div style="display:flex;justify-content:space-between;gap:12px;padding:6px 0;border-top:1px solid rgba(47,143,89,.45)"><span class="lbl">{{t.statusWord}}</span><span style="color:#FFB000">{{t.pending}}</span></div>
+<div style="margin-top:16px"><a class="btn" href="CaseStudy.dc.html">{{t.openCase}} ▸</a></div>
+</div>
+</div>
+</div>
+</div>
+</section>
+
+<!-- Casos de estudio -->
+<section id="casos" style="padding:72px 48px;border-bottom:1px solid #2F8F59">
+<div class="lbl">02 // {{t.casesKicker}}</div>
+<h2 style="margin:4px 0 8px;font-size:32px;line-height:1.2;font-weight:700;letter-spacing:.02em">{{t.casesTitle}}</h2>
+<p style="margin:0 0 32px;max-width:680px;color:#4FB57A">{{t.casesSub}}</p>
+<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:24px">
+<sc-for list="{{cases}}" as="c" hint-placeholder-count="4">
+<div class="pn" style="display:flex;flex-direction:column">
+<div class="hd"><span>{{c.id}}</span><span>{{c.domain}}</span></div>
+<div style="padding:16px;display:flex;flex-direction:column;gap:8px;flex:1">
+<div style="font-size:18px;line-height:26px;font-weight:700">{{c.title}}</div>
+<div class="lbl" style="margin-top:8px">{{c.ml}}</div>
+<div style="font-size:24px;line-height:30px;font-weight:700;color:{{c.mvColor}}">{{c.mv}}</div>
+<p style="margin:8px 0 0;font-size:13px;line-height:20px;flex:1">{{c.desc}}</p>
+<sc-if value="{{c.open}}" hint-placeholder-val="{{true}}">
+<a class="btn" href="CaseStudy.dc.html" style="margin-top:12px">{{t.viewCase}} ▸</a>
+</sc-if>
+<sc-if value="{{c.closed}}" hint-placeholder-val="{{false}}">
+<div class="lbl" style="margin-top:12px;min-height:48px;display:flex;align-items:center;color:#FFB000">{{t.soon}}</div>
+</sc-if>
+</div>
+</div>
+</sc-for>
+</div>
+</section>
+
+<!-- Ahora + Sobre mí -->
+<section style="display:flex;flex-wrap:wrap;gap:24px;padding:72px 48px;border-bottom:1px solid #2F8F59">
+<div class="pn" style="flex:1 1 380px;min-width:0">
+<div class="hd"><span>{{t.nowTitle}}</span><span>2</span></div>
+<div style="padding:12px 16px">
+<sc-for list="{{t.now}}" as="n" hint-placeholder-count="2">
+<div style="display:flex;flex-wrap:wrap;justify-content:space-between;gap:8px 16px;padding:8px 0;border-bottom:1px solid rgba(47,143,89,.45)"><span class="lbl">{{n.k}}</span><span>{{n.v}}</span></div>
+</sc-for>
+</div>
+</div>
+<div class="pn" style="flex:1.618 1 480px;min-width:0">
+<div class="hd"><span>{{t.aboutTitle}}</span><span>README</span></div>
+<p style="margin:0;padding:16px;max-width:640px;font-size:15px;line-height:26px">{{t.about}}</p>
+</div>
+</section>
+
+<!-- Contacto -->
+<section id="contacto" style="padding:72px 48px">
+<div class="lbl">03 // {{t.contactKicker}}</div>
+<h2 style="margin:4px 0 24px;font-size:32px;line-height:1.2;font-weight:700;letter-spacing:.02em">{{t.contactTitle}}</h2>
+<div class="pn" style="max-width:640px">
+<div class="hd"><span>TERMINAL</span><span>{{t.open}}</span></div>
+<div style="padding:12px 16px">
+<div style="display:flex;justify-content:space-between;gap:16px;padding:8px 0;border-bottom:1px solid rgba(47,143,89,.45)"><span class="lbl">EMAIL</span><span style="color:#FFB000">[TU EMAIL]</span></div>
+<div style="display:flex;justify-content:space-between;gap:16px;padding:8px 0;border-bottom:1px solid rgba(47,143,89,.45)"><span class="lbl">GITHUB</span><a href="https://github.com/Ares-Infenus" style="text-decoration:underline">Ares-Infenus</a></div>
+<div style="display:flex;justify-content:space-between;gap:16px;padding:8px 0;border-bottom:1px solid rgba(47,143,89,.45)"><span class="lbl">LINKEDIN</span><a href="https://linkedin.com/in/sebastiandpinzon" style="text-decoration:underline">sebastiandpinzon</a></div>
+<div style="display:flex;justify-content:space-between;gap:16px;padding:8px 0"><span class="lbl">CV</span><span style="color:#FFB000">[PDF]</span></div>
+</div>
+</div>
+<div style="margin-top:24px"><span class="blink">█</span></div>
+</section>
+
+<!-- Pie -->
+<footer style="display:flex;flex-wrap:wrap;justify-content:space-between;gap:12px 24px;padding:12px 48px 20px;border-top:1px solid #2F8F59;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:#4FB57A">
+<span style="display:flex;flex-wrap:wrap;gap:16px">
+<sc-for list="{{t.fk}}" as="k" hint-placeholder-count="4">
+<span><b style="background:#39FF88;color:#050807;padding:0 6px;margin-right:6px;text-shadow:none">{{k.key}}</b>{{k.label}}</span>
+</sc-for>
+</span>
+<span>© SEBASTIÁN PINZÓN // {{t.banner}}</span>
+</footer>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":2500}}'>
+const T = {
+  es: {
+    sys: 'PORTAFOLIO', leg: 'LEGIBLE', banner: 'NIVEL DE ACCESO: Ω // PÚBLICO', session: 'SESIÓN 0x7C41',
+    boot1: '> ARRANQUE DEL NÚCLEO v4.2', boot2: '> CARGANDO PERFIL ............ OK', boot3: '> ENLACE SEGURO ESTABLECIDO',
+    role: 'Data Engineer', tagline: 'Pipelines y plataformas de datos para sistemas de machine learning.',
+    chips: [{ label: '12 PROYECTOS' }, { label: '4 CASOS DE ESTUDIO' }, { label: 'ES / EN' }],
+    cta1: 'VER CASOS DE ESTUDIO', cta2: 'CONTACTO',
+    proofTitle: 'PRUEBA RÁPIDA',
+    proof: [{ k: 'SPARKFLOW', v: '100M+ transacciones' }, { k: 'YOLOV8', v: '85.2 % mAP@50' }, { k: 'MARKOWITZ', v: 'Sharpe 1.29' }, { k: 'CHURN', v: 'AUC 0.8458' }],
+    pipeKicker: 'ARQUITECTURA', pipeTitle: 'PIPELINE 2.5D',
+    pipeSub: 'Así viaja un dato de crudo a consumo. Haz clic en una capa y rota la vista con los botones.',
+    pipeHint: 'CLIC EN UNA CAPA', rotL: '◂ ROTAR', rotR: 'ROTAR ▸', v2: 'VISTA 2D', v25: 'VISTA 2.5D',
+    layerWord: 'CAPA', metricWord: 'MÉTRICA', statusWord: 'ESTADO', noData: 'SIN DATOS', pending: '[DETALLE POR CONFIRMAR]', openCase: 'ABRIR CASO DE ESTUDIO',
+    layers: [
+      { name: 'BRONZE', tag: 'CRUDO', desc: 'Ingesta de los datos tal como llegan, sin transformar.' },
+      { name: 'SILVER', tag: 'LIMPIO', desc: 'Datos limpios, tipados y validados.' },
+      { name: 'GOLD', tag: 'CONSUMO', desc: 'Tablas listas para análisis y modelos.' }
+    ],
+    casesKicker: 'EXPEDIENTES', casesTitle: 'CASOS DE ESTUDIO', casesSub: 'Cada expediente documenta arquitectura, decisiones y limitaciones.',
+    cases: [
+      { id: 'EXP-01', domain: 'Ingeniería de datos', title: 'SparkFlow Delta Pipeline', ml: 'TRANSACCIONES', mv: '100M+', desc: 'Arquitectura medallion Bronze/Silver/Gold con idempotencia, particionado y time travel.', open: true },
+      { id: 'EXP-02', domain: 'Ingeniería de datos', title: 'Pipeline Airflow + dbt', ml: 'ESTADO', mv: 'EN CONSTRUCCIÓN', desc: 'Pipeline orquestado sobre datos de Binance, con presupuesto cero.', open: false, building: true },
+      { id: 'EXP-03', domain: 'ML en producción', title: 'ML API productiva', ml: 'MÉTRICA', mv: 'SIN DATOS', desc: 'API de machine learning con FastAPI, Pydantic, Docker y CI.', open: false },
+      { id: 'EXP-04', domain: 'Machine learning', title: 'BTC/USDT Price Direction Predictor', ml: 'ROC-AUC', mv: '0.5431', desc: 'XGBoost con Optuna y SHAP, validado con walk-forward. Resultado modesto, documentado con sus límites.', open: false }
+    ],
+    viewCase: 'VER CASO', soon: 'CASO EN REDACCIÓN',
+    nowTitle: 'AHORA', now: [{ k: 'OMDENA × HOT fAIr', v: 'GeoData Scout · ML junior' }, { k: 'AIRFLOW + DBT', v: 'Pipeline en construcción' }],
+    aboutTitle: 'SOBRE MÍ',
+    about: 'Ingeniero de datos autodidacta en Colombia. Construyo proyectos de nivel producción: pipelines, machine learning y análisis cuantitativo. Busco un rol remoto de data engineering.',
+    contactKicker: 'CONTACTO', contactTitle: 'ABRIR CANAL', open: 'ABIERTO',
+    fk: [{ key: 'F1', label: 'AYUDA' }, { key: 'F2', label: 'CONFIG' }, { key: 'F3', label: 'BUSCAR' }, { key: 'F10', label: 'SALIR' }]
+  },
+  en: {
+    sys: 'PORTFOLIO', leg: 'READABLE', banner: 'ACCESS LEVEL: Ω // PUBLIC', session: 'SESSION 0x7C41',
+    boot1: '> CORE BOOT v4.2', boot2: '> LOADING PROFILE ............ OK', boot3: '> SECURE LINK ESTABLISHED',
+    role: 'Data Engineer', tagline: 'Data pipelines and platforms for machine learning systems.',
+    chips: [{ label: '12 PROJECTS' }, { label: '4 CASE STUDIES' }, { label: 'ES / EN' }],
+    cta1: 'VIEW CASE STUDIES', cta2: 'CONTACT',
+    proofTitle: 'QUICK PROOF',
+    proof: [{ k: 'SPARKFLOW', v: '100M+ transactions' }, { k: 'YOLOV8', v: '85.2 % mAP@50' }, { k: 'MARKOWITZ', v: 'Sharpe 1.29' }, { k: 'CHURN', v: 'AUC 0.8458' }],
+    pipeKicker: 'ARCHITECTURE', pipeTitle: '2.5D PIPELINE',
+    pipeSub: 'How a record travels from raw to consumption. Click a layer and rotate the view with the buttons.',
+    pipeHint: 'CLICK A LAYER', rotL: '◂ ROTATE', rotR: 'ROTATE ▸', v2: '2D VIEW', v25: '2.5D VIEW',
+    layerWord: 'LAYER', metricWord: 'METRIC', statusWord: 'STATUS', noData: 'NO DATA', pending: '[DETAIL TO BE CONFIRMED]', openCase: 'OPEN CASE STUDY',
+    layers: [
+      { name: 'BRONZE', tag: 'RAW', desc: 'Ingestion of data exactly as it arrives, untransformed.' },
+      { name: 'SILVER', tag: 'CLEAN', desc: 'Cleaned, typed and validated data.' },
+      { name: 'GOLD', tag: 'CONSUMPTION', desc: 'Tables ready for analytics and models.' }
+    ],
+    casesKicker: 'CASE FILES', casesTitle: 'CASE STUDIES', casesSub: 'Each file documents architecture, decisions and limitations.',
+    cases: [
+      { id: 'EXP-01', domain: 'Data engineering', title: 'SparkFlow Delta Pipeline', ml: 'TRANSACTIONS', mv: '100M+', desc: 'Bronze/Silver/Gold medallion architecture with idempotency, partitioning and time travel.', open: true },
+      { id: 'EXP-02', domain: 'Data engineering', title: 'Airflow + dbt Pipeline', ml: 'STATUS', mv: 'IN PROGRESS', desc: 'Orchestrated pipeline over Binance data, on a zero budget.', open: false, building: true },
+      { id: 'EXP-03', domain: 'ML in production', title: 'Production ML API', ml: 'METRIC', mv: 'NO DATA', desc: 'Machine learning API with FastAPI, Pydantic, Docker and CI.', open: false },
+      { id: 'EXP-04', domain: 'Machine learning', title: 'BTC/USDT Price Direction Predictor', ml: 'ROC-AUC', mv: '0.5431', desc: 'XGBoost with Optuna and SHAP, validated with walk-forward. A modest result, documented with its limits.', open: false }
+    ],
+    viewCase: 'VIEW CASE', soon: 'CASE FILE IN PROGRESS',
+    nowTitle: 'NOW', now: [{ k: 'OMDENA × HOT fAIr', v: 'GeoData Scout · junior ML' }, { k: 'AIRFLOW + DBT', v: 'Pipeline in progress' }],
+    aboutTitle: 'ABOUT', 
+    about: 'Self-taught data engineer based in Colombia. I build production-grade projects: pipelines, machine learning and quantitative analysis. Looking for a remote data engineering role.',
+    contactKicker: 'CONTACT', contactTitle: 'OPEN CHANNEL', open: 'OPEN',
+    fk: [{ key: 'F1', label: 'HELP' }, { key: 'F2', label: 'CONFIG' }, { key: 'F3', label: 'SEARCH' }, { key: 'F10', label: 'EXIT' }]
+  }
+};
+const Z = [0, 90, 180];
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.state = { lang: 'es', crt: true, layer: 2, yaw: -30, pitch: 58 };
+  }
+  renderVals() {
+    const s = this.state, t = T[s.lang], crt = s.crt;
+    const on = 'background:#050807;color:#39FF88;border:1px solid #050807;';
+    const off = 'background:transparent;color:#050807;border:1px solid #050807;';
+    const layers = Z.map((z, i) => {
+      const sel = s.layer === i, L = t.layers[i];
+      return {
+        name: L.name, tag: L.tag, aria: t.layerWord + ' ' + L.name, color: sel ? '#39FF88' : '#4FB57A',
+        pick: () => this.setState({ layer: i }),
+        style: 'position:absolute;left:0;top:0;width:420px;height:260px;box-sizing:border-box;padding:0;cursor:pointer;transform:translateZ(' + z + 'px);border:1px solid ' + (sel ? '#39FF88' : '#2F8F59') + ';background-color:' + (sel ? 'rgba(57,255,136,.14)' : 'rgba(11,19,14,.82)') + ';background-image:linear-gradient(rgba(47,143,89,.45) 1px,transparent 1px),linear-gradient(90deg,rgba(47,143,89,.45) 1px,transparent 1px);background-size:30px 30px;box-shadow:' + (sel && crt ? '0 0 14px rgba(57,255,136,.55)' : 'none') + ';'
+      };
+    });
+    const S = t.layers[s.layer];
+    return {
+      t, layers,
+      sel: { name: S.name, tag: S.tag, desc: S.desc, num: s.layer + 1 },
+      cases: t.cases.map((c) => ({ ...c, closed: !c.open, mvColor: c.building ? '#FFB000' : '#39FF88' })),
+      isCrt: crt,
+      fs: crt ? 14 : 16,
+      glow: crt ? '0 0 6px rgba(57,255,136,.35)' : 'none',
+      glowStrong: crt ? '0 0 4px rgba(57,255,136,.7), 0 0 14px rgba(57,255,136,.45)' : 'none',
+      sceneT: 'rotateX(' + s.pitch + 'deg) rotateZ(' + s.yaw + 'deg)',
+      esStyle: s.lang === 'es' ? on : off, enStyle: s.lang === 'en' ? on : off,
+      crtStyle: crt ? on : off, legStyle: crt ? off : on,
+      setEs: () => this.setState({ lang: 'es' }), setEn: () => this.setState({ lang: 'en' }),
+      setCrt: () => this.setState({ crt: true }), setLeg: () => this.setState({ crt: false }),
+      rotL: () => this.setState({ yaw: s.yaw - 20 }), rotR: () => this.setState({ yaw: s.yaw + 20 }),
+      v2d: () => this.setState({ pitch: 0, yaw: 0 }), v25: () => this.setState({ pitch: 58, yaw: -30 })
+    };
+  }
+}
+</script>
+</body>
+</html>

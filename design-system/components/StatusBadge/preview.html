@@ -1,0 +1,62 @@
+<!-- @dsCard group="Estado" height=160 subtitle="El estado siempre va escrito" -->
+<!doctype html><html lang="es"><head><meta charset="utf-8"><link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet"><style>
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--fg);font:500 13px/20px var(--font-mono);font-variant-numeric:tabular-nums}
+body{padding:16px}
+.lbl{font-size:11px;line-height:16px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--fg-dim)}
+.dim{color:var(--fg-dim)}
+.ok{color:var(--state-ok)}.warn{color:var(--state-warn)}.crit{color:var(--state-crit)}
+.panel{position:relative;border:1px solid var(--line);background:var(--bg-raised);margin:4px}
+.panel>header{display:flex;justify-content:space-between;gap:12px;padding:2px 12px;background:var(--invert-bg);color:var(--invert-fg);font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase}
+.panel.crit>header{background:var(--state-crit)}
+.panel .body{padding:12px}
+.panel::before,.panel::after{content:"";position:absolute;bottom:-4px;width:10px;height:10px;border-bottom:2px solid var(--fg)}
+.panel::before{left:-4px;border-left:2px solid var(--fg)}
+.panel::after{right:-4px;border-right:2px solid var(--fg)}
+.kv{display:flex;justify-content:space-between;gap:12px}
+table{width:100%;border-collapse:collapse}
+th{font-size:11px;line-height:16px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--fg-dim);text-align:left;padding:4px 12px;border-bottom:1px solid var(--line)}
+td{padding:2px 12px}
+th.n,td.n{text-align:right}
+tr.cur td{background:var(--invert-bg);color:var(--invert-fg);font-weight:700}
+.meter{display:flex;align-items:center;gap:12px;margin:4px 0}
+.meter .lbl{width:112px;flex:none}
+.segs{display:flex;gap:2px}
+.seg{width:8px;height:12px;border:1px solid var(--line);border-radius:var(--radius-xs)}
+.seg.on{border-color:transparent;background:var(--c,var(--fg))}
+.meter .v{width:88px;text-align:right}
+.badge{display:inline-flex;align-items:center;gap:8px;padding:0 8px;border:1px solid currentColor;font-size:11px;line-height:18px;font-weight:700;letter-spacing:.08em;text-transform:uppercase}
+.badge i{width:6px;height:6px;border-radius:var(--radius-dot);background:currentColor}
+.badge.inv{background:currentColor}.badge.inv span{color:var(--bg)}
+.bar{display:flex;flex-wrap:wrap;gap:16px;border-top:1px solid var(--line);padding-top:8px}
+.k{font-size:11px;letter-spacing:.08em;text-transform:uppercase}
+.k b{background:var(--invert-bg);color:var(--invert-fg);padding:0 6px;margin-right:6px;font-weight:700}
+.ring{fill:none;stroke:var(--line);stroke-width:1}
+.ax{stroke:var(--line);stroke-width:1}
+.blip{fill:var(--fg)}.blipc{fill:var(--state-crit)}
+.sw{transform-origin:140px 140px;animation:sweep 6s linear infinite}
+@keyframes sweep{to{transform:rotate(360deg)}}
+@media (prefers-reduced-motion:reduce){.sw{animation:none}}
+
+body{padding:8px}
+.btn{border:1px solid var(--line);background:transparent;color:var(--fg);font:600 11px/18px var(--font-mono);letter-spacing:.08em;text-transform:uppercase;padding:0 10px;cursor:pointer;border-radius:0}
+.btn:hover,.btn.on{background:var(--invert-bg);color:var(--invert-fg)}
+.crt{--k:1;position:relative;overflow:hidden;background:var(--bg);border:1px solid var(--line);border-radius:22px/18px;box-shadow:inset 0 0 70px rgba(0,0,0,calc(.9*var(--k))),0 0 24px rgba(0,0,0,.6)}
+.crt>.in{position:relative;z-index:1;animation:flick 5s steps(1) infinite;text-shadow:var(--glow-soft)}
+.crt.abr>.in{text-shadow:-1px 0 rgba(255,60,60,calc(.38*var(--k))),1px 0 rgba(60,200,255,calc(.30*var(--k))),var(--glow-soft)}
+.crt canvas{filter:drop-shadow(0 0 2px var(--fg))}
+.crt::before{content:"";position:absolute;inset:0;z-index:30;pointer-events:none;background:repeating-linear-gradient(to bottom,rgba(0,0,0,calc(var(--scanline-opacity)*var(--k))) 0,rgba(0,0,0,calc(var(--scanline-opacity)*var(--k))) 1px,transparent 1px,transparent 3px)}
+.crt::after{content:"";position:absolute;inset:0;z-index:31;pointer-events:none;background:radial-gradient(ellipse at center,transparent 48%,rgba(0,0,0,calc(var(--vignette-opacity)*var(--k))) 100%)}
+.roll{position:absolute;left:0;right:0;top:-20%;height:18%;z-index:29;pointer-events:none;background:linear-gradient(to bottom,transparent,rgba(255,255,255,calc(.06*var(--k))),transparent);animation:roll 8s linear infinite}
+.grain{position:absolute;inset:-20px;z-index:28;pointer-events:none;opacity:calc(var(--grain-opacity)*var(--k));mix-blend-mode:screen;background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");animation:grain .6s steps(4) infinite}
+@keyframes flick{0%,100%{opacity:1}7%{opacity:.97}8%{opacity:1}43%{opacity:.985}44%{opacity:1}71%{opacity:.955}72%{opacity:1}}
+@keyframes roll{to{top:110%}}
+@keyframes grain{0%{transform:translate(0,0)}25%{transform:translate(-8px,6px)}50%{transform:translate(6px,-10px)}75%{transform:translate(-4px,-6px)}100%{transform:translate(0,0)}}
+@keyframes on{0%{transform:scale(.2,.004);filter:brightness(6)}35%{transform:scale(1,.004);filter:brightness(4)}70%{transform:scale(1,1.02);filter:brightness(1.8)}100%{transform:none;filter:none}}
+@keyframes blink{50%{opacity:0}}
+@keyframes tick{to{transform:translateX(-50%)}}
+.crt.boot>.in{animation:on .9s cubic-bezier(.2,.8,.2,1) both,flick 5s 1s steps(1) infinite}
+.crt.no-scan::before{display:none}.crt.no-vig::after{display:none}.crt.no-bloom>.in{text-shadow:none}.crt.no-flick>.in{animation:none}.crt.no-grain .grain{display:none}
+.cur{animation:blink 1s steps(1) infinite}
+@media (prefers-reduced-motion:reduce){.crt>.in,.roll,.grain,.cur{animation:none}}
+.row{display:flex;gap:16px;flex-wrap:wrap;margin-bottom:12px}</style></head><body><div class="crt abr"><div class="in" style="padding:14px"><div class="row"><span class="badge ok"><i></i>OK</span><span class="badge warn"><i></i>ATENCIÓN</span><span class="badge crit"><i></i>CRÍTICO</span><span class="badge dim"><i></i>SIN DATOS</span></div><div class="row"><span class="badge inv ok"><span>ACTIVO</span></span><span class="badge inv crit"><span>COMPROMETIDO</span></span></div></div><div class="grain"></div><div class="roll"></div></div></body></html>
