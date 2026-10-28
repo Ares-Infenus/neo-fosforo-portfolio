@@ -1,16 +1,36 @@
 ---
 // La raíz redirige al idioma base (español). Si el navegador está en inglés, va a /en/.
+// Lleva su propia vista previa: LinkedIn y otras redes no ejecutan la redirección.
+import { ui } from '../i18n/ui';
+const site = Astro.site ?? new URL('https://neo-fosforo-portfolio.vercel.app');
+const abs = (p: string) => new URL(p, site).href;
+const title = ui.es['meta.title'];
+const description = ui.es['meta.desc'];
 ---
 <!doctype html>
 <html lang="es">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Sebastián Pinzón — Data Engineer</title>
+  <title>{title}</title>
+  <meta name="description" content={description} />
   <meta http-equiv="refresh" content="0; url=/es/" />
-  <link rel="canonical" href="/es/" />
-  <link rel="alternate" hreflang="es" href="/es/" />
-  <link rel="alternate" hreflang="en" href="/en/" />
+  <link rel="canonical" href={abs('/es/')} />
+  <link rel="alternate" hreflang="es" href={abs('/es/')} />
+  <link rel="alternate" hreflang="en" href={abs('/en/')} />
+  <link rel="alternate" hreflang="x-default" href={abs('/es/')} />
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="Sebastián Pinzón" />
+  <meta property="og:title" content={title} />
+  <meta property="og:description" content={description} />
+  <meta property="og:url" content={abs('/')} />
+  <meta property="og:locale" content="es_CO" />
+  <meta property="og:image" content={abs('/og-es.jpg')} />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:image" content={abs('/og-es.jpg')} />
   <script is:inline>
     if ((navigator.language || '').slice(0, 2) === 'en') location.replace('/en/');
   </script>
