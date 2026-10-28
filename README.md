@@ -1,5 +1,7 @@
 # Sebastián Pinzón · Portafolio (Neo-Fósforo)
 
+**En línea:** https://neo-fosforo-portfolio.vercel.app/es/ · [English](https://neo-fosforo-portfolio.vercel.app/en/)
+
 Portafolio personal de **Sebastián Pinzón, Data Engineer junior**. Sitio estático bilingüe (ES/EN) con una escena 3D que explica un pipeline de datos medallion (Bronze → Silver → Gold) sobre una mesa táctica holográfica.
 
 > **EN** — Personal portfolio of Sebastián Pinzón, junior Data Engineer. Static bilingual site (Spanish/English) built with Astro, MDX and Three.js. Every figure on the site links to a public repository; anything unverified is left out.
@@ -40,7 +42,7 @@ npm run build    # sitio estático en site/dist/
 ```
 
 ## Despliegue
-Sitio 100 % estático. En Vercel, Netlify o Cloudflare Pages: directorio raíz `site`, comando `npm run build`, salida `dist`. Antes de publicar, cambia `site` en `site/astro.config.mjs` por el dominio real (lo usan las etiquetas canonical y hreflang).
+Publicado en **Vercel** (plan gratuito): cada push a `main` se despliega solo. Configuración: directorio raíz `site`, comando `npm run build`, salida `dist`. Si cambia el dominio, actualiza `site` en `site/astro.config.mjs` (lo usan canonical, hreflang y la vista previa al compartir).
 
 ## Stack
 Astro 7 · MDX · TypeScript · Zod · Three.js · CSS propio (JetBrains Mono).

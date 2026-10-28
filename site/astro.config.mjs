@@ -3,8 +3,8 @@ import { defineConfig } from 'astro/config';
 import mdx from '@astrojs/mdx';
 
 export default defineConfig({
-  // Cambia esto por el dominio real antes de publicar (se usa en canonical y hreflang).
-  site: 'https://example.com',
+  // Dominio público (canonical, hreflang y vista previa al compartir). Si cambia el dominio, cámbialo aquí.
+  site: 'https://neo-fosforo-portfolio.vercel.app',
   trailingSlash: 'ignore',
   // La copia estable (la que sirve `npm run stable`) vive en .stable/; los builds normales van a dist/.
   outDir: process.env.NF_STABLE ? './.stable' : './dist',
