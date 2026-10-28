@@ -605,23 +605,28 @@ export function initScene(o: SceneOptions): SceneApi {
      Mide el propio rendimiento mientras corre y baja de escalón si el equipo no aguanta:
        0 calidad del equipo · 1 sin bloom, resolución 0,75 · 2 resolución 0,5 y 30 fps
        3 casi fija (≤12 fps) · 4 sin 3D activo: queda de fondo una captura del último fotograma.
-     El escalón alcanzado se recuerda 7 días para ese equipo, así la siguiente visita arranca bien. */
-  const LVL_KEY = 'nf-lvl';
+     Un tirón pasajero no debe castigar al equipo: el escalón guardado solo sirve de punto de partida
+     (siempre uno por encima y como mucho el 2), se sube de nuevo cuando el rendimiento se recupera
+     y la imagen fija (4) queda reservada a navegadores sin aceleración gráfica o a un 3D casi detenido. */
+  const LVL_KEY = 'nf-lvl2';
   const soft = /swiftshader|llvmpipe|basic render|software/i.test(gpuName);
   let lvl = 0;
   try {
+    localStorage.removeItem('nf-lvl'); // versión anterior del regulador, demasiado agresiva
     const saved = JSON.parse(localStorage.getItem(LVL_KEY) || 'null');
-    if (saved && saved.gpu === gpuName && Date.now() - saved.t < 7 * 864e5) lvl = saved.l;
+    if (saved && saved.gpu === gpuName && Date.now() - saved.t < 7 * 864e5) lvl = Math.max(0, Math.min(2, saved.l - 1));
   } catch { /* sin almacenamiento */ }
   if (soft) lvl = 4;
   else if (cores <= 2) lvl = Math.max(lvl, 2);
   if (forced) lvl = 0;
   const saveLvl = () => { try { localStorage.setItem(LVL_KEY, JSON.stringify({ l: lvl, t: Date.now(), gpu: gpuName })); } catch { /* sin almacenamiento */ } };
   const root = document.documentElement;
+  // El modo ligero puede venir del hardware (lo pone el <head>); en ese caso se mantiene al subir de escalón.
+  const lowfxByHw = root.classList.contains('lowfx');
   const applyLvl = () => {
     root.dataset.lvl = String(lvl);
     if (lvl >= 1 && composer) dropBloom();
-    if (lvl === 1 && dpr > 0.75) setDpr(0.75);
+    if (lvl === 1) { if (dpr !== Math.min(0.75, dprMax)) setDpr(Math.min(0.75, dprMax)); if (!lowfxByHw) root.classList.remove('lowfx'); }
     if (lvl >= 2) { if (dpr > 0.5) setDpr(0.5); root.classList.add('lowfx'); }
   };
   // Intervalo mínimo entre fotogramas y fps esperados para cada escalón (primer plano / segundo plano).
@@ -655,7 +660,7 @@ export function initScene(o: SceneOptions): SceneApi {
     onStillScroll();
   }
 
-  let winStart = 0, winN = 0, winW = 0, bad = 0, settle = 1.5, lastFrameAt = 0;
+  let winStart = 0, winN = 0, winW = 0, bad = 0, good = 0, settle = 4, lastFrameAt = 0;
   // Fluidez de toda la página (no solo del 3D): intervalos entre requestAnimationFrame.
   let prevRaf = 0, rafN = 0, rafLong = 0;
   function trackPage(now: number) {
@@ -673,15 +678,28 @@ export function initScene(o: SceneOptions): SceneApi {
     const jank = rafN > 10 ? rafLong / rafN : 0;
     winStart = now; winN = 0; winW = 0; rafN = 0; rafLong = 0;
     if (settle > 0) { settle -= el / 1000; return; }
+    // Con la ventana sin foco el equipo atiende otras cosas: no se juzga.
+    if (!document.hasFocus()) { bad = 0; good = 0; return; }
     const exp = expected();
-    // Lento si el 3D no llega a su ritmo, si su cálculo se come el hilo principal
-    // o si la página pierde fotogramas con frecuencia (más del 12 % de los fotogramas > 34 ms).
-    const slow = fps < exp * 0.72 || avgWork > (1000 / exp) * 0.55 || jank > 0.12;
-    bad = slow ? bad + 1 : 0;
-    if (bad >= 2 && lvl < 4) {
-      lvl++; bad = 0; settle = 2;
+    // El 3D es lento si no llega a su ritmo o si su cálculo se come el hilo principal.
+    const slow3d = fps < exp * 0.7 || avgWork > (1000 / exp) * 0.6;
+    // La página pierde fotogramas a menudo (más del 20 % por encima de 34 ms).
+    const jankPage = jank > 0.2;
+    bad = slow3d || jankPage ? bad + 1 : 0;
+    good = !slow3d && !jankPage && fps >= exp * 0.9 && jank < 0.05 ? good + 1 : 0;
+    // Bajar: 3 segundos seguidos malos. Los tirones de la página solo bajan hasta el 2;
+    // la imagen fija solo llega si el 3D, ya casi fijo, no alcanza ni 5 fps.
+    const ceiling = slow3d ? (lvl === 3 && fps < 5 ? 4 : 3) : 2;
+    if (bad >= 3 && lvl < ceiling) {
+      lvl++; bad = 0; good = 0; settle = 3;
       saveLvl();
       if (lvl === 4) freeze(); else applyLvl();
+      return;
+    }
+    // Subir: 6 segundos seguidos holgados (sin volver al bloom, que ya se liberó).
+    if (good >= 6 && lvl >= 2 && lvl <= 3) {
+      lvl--; good = 0; settle = 3;
+      saveLvl(); applyLvl();
     }
   }
 

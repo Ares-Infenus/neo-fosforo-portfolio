@@ -90,8 +90,8 @@ const jsonLd = {
       // Modo ligero en táctiles y pantallas pequeñas: sin vidrio esmerilado (backdrop-filter), que es lo más caro sobre el 3D.
       // También en PCs modestos (4 núcleos o menos, 4 GB de RAM o menos) o si el regulador 3D ya bajó de calidad antes.
       var lowHw = (navigator.hardwareConcurrency || 8) <= 4 || (navigator.deviceMemory || 8) <= 4, savedLvl = 0;
-      try { savedLvl = (JSON.parse(localStorage.getItem('nf-lvl') || 'null') || {}).l || 0; } catch (e) {}
-      if ((window.matchMedia && matchMedia('(pointer:coarse)').matches) || innerWidth < 760 || lowHw || savedLvl >= 2) d.classList.add('lowfx');
+      try { savedLvl = (JSON.parse(localStorage.getItem('nf-lvl2') || 'null') || {}).l || 0; } catch (e) {}
+      if ((window.matchMedia && matchMedia('(pointer:coarse)').matches) || innerWidth < 760 || lowHw || savedLvl >= 3) d.classList.add('lowfx');
       // Secuencia de arranque: solo en la home, con movimiento y no al volver desde un caso.
       var back = document.referrer.indexOf(location.origin) === 0 && /\/work\//.test(document.referrer);
       if (d.dataset.intro === '1' && !rm && !back) d.classList.add('intro');
